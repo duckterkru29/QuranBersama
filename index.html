@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="id" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuranBersama - Al-Quran, Hadits & Amalan Harian</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #064E3B;
+            /* Deep Islamic Green */
+            --secondary: #047857;
+            /* Emerald Green */
+            --accent: #D4AF37;
+            /* Elegant Gold */
+            --bg: #F3F4F6;
+            --card: #ffffff;
+            --text: #1F2937;
+            --success: #10B981;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--primary);
+            border-radius: 24px;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(6, 78, 59, 0.15);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            /* Islamic pattern subtle overlay */
+            background-image: radial-gradient(rgba(212, 175, 55, 0.1) 2px, transparent 2px), radial-gradient(rgba(212, 175, 55, 0.1) 2px, transparent 2px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+
+        h1 {
+            color: var(--accent);
+            font-family: 'Amiri', serif;
+            font-size: 3em;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            color: #E5E7EB;
+            font-size: 1.2em;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            border: 1px solid rgba(6, 78, 59, 0.1);
+            background: var(--card);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--primary);
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(6, 78, 59, 0.25);
+            border-color: var(--primary);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Quran Styles */
+        .surah-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .surah-item {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .surah-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 30px rgba(6, 78, 59, 0.1);
+        }
+
+        .surah-number {
+            display: inline-flex;
+            width: 45px;
+            height: 45px;
+            background: var(--primary);
+            color: var(--accent);
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(6, 78, 59, 0.2);
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.8em;
+            text-align: right;
+            line-height: 2;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .translation {
+            text-align: left;
+            color: #555;
+            line-height: 1.8;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 10px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .ayah-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+
+        .ayah-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .ayah-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: var(--accent);
+            color: var(--primary);
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(6, 78, 59, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        /* Hadits Styles */
+        .hadits-card {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+            border-right: 5px solid var(--accent);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .hadits-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hadits-source {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .hadits-arab {
+            font-family: 'Amiri', serif;
+            font-size: 1.4em;
+            line-height: 2;
+            text-align: right;
+            margin: 15px 0;
+            color: #1a1a1a;
+        }
+
+        .hadits-translation {
+            color: #555;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        /* Prayer Times Styles */
+        .prayer-times-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .prayer-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .prayer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(6, 78, 59, 0.2);
+        }
+
+        .prayer-card.active {
+            background: linear-gradient(135deg, var(--accent) 0%, #B8860B 100%);
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .prayer-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .prayer-time {
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .location-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .location-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        /* Sijil Tsaksiyah Styles */
+        .date-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .current-date {
+            font-size: 1.5em;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .activity-category {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .category-title {
+            font-size: 1.3em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .activity-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .activity-item.completed {
+            background: #d4edda;
+            border-left: 4px solid var(--success);
+        }
+
+        .activity-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .activity-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .checkbox-wrapper {
+            position: relative;
+        }
+
+        .custom-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .custom-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .custom-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 5px;
+            transition: width 0.5s;
+        }
+
+        /* Reading Tracker */
+        .reading-tracker {
+            background: linear-gradient(135deg, #fff3cd 0%, #fff 100%);
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .tracker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .reading-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .reading-stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .reading-stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            border-radius: 25px 25px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+
+            .arabic-text {
+                font-size: 1.4em;
+            }
+
+            .prayer-times-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: slideIn 0.3s;
+            z-index: 2000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .quran-reader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .audio-btn {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .bismillah {
+            text-align: center;
+            font-family: 'Amiri', serif;
+            font-size: 2em;
+            color: var(--primary);
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-mosque"></i> QuranBersama</h1>
+            <p class="subtitle">Al-Quran, Hadits Shahih, Jadwal Shalat & Catatan Amal Harian</p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-btn active" onclick="showSection('quran')">
+                <i class="fas fa-book-quran"></i> Al-Quran
+            </button>
+            <button class="nav-btn" onclick="showSection('hadits')">
+                <i class="fas fa-scroll"></i> Hadits Shahih
+            </button>
+            <button class="nav-btn" onclick="showSection('prayer')">
+                <i class="fas fa-clock"></i> Jadwal Shalat
+            </button>
+            <button class="nav-btn" onclick="showSection('sijil')">
+                <i class="fas fa-clipboard-check"></i> Kegiatan Harian
+            </button>
+        </nav>
+
+        <!-- Al-Quran Section -->
+        <section id="quran" class="content-section active">
+            <div class="card">
+                <div id="surahListView">
+                    <h2 style="margin-bottom: 20px; color: var(--primary);">
+                        <i class="fas fa-list"></i> Daftar Surah
+                    </h2>
+                    <div id="surahList" class="surah-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="surahDetailView" style="display: none;">
+                    <div class="quran-reader-header">
+                        <button class="btn-primary" onclick="backToSurahList()">
+                            <i class="fas fa-arrow-right"></i> Kembali ke Daftar
+                        </button>
+                        <div>
+                            <button class="audio-btn" onclick="playFullSurah()">
+                                <i class="fas fa-play"></i> Dengar Surah
+                            </button>
+                        </div>
+                    </div>
+                    <div id="surahContent"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hadits Section -->
+        <section id="hadits" class="content-section">
+            <div class="card">
+                <h2 style="margin-bottom: 20px; color: var(--primary);">
+                    <i class="fas fa-book-open"></i> Kumpulan Hadits Shahih
+                </h2>
+                <div style="margin-bottom: 20px;">
+                    <select id="haditsSource" class="btn-primary" style="width: 100%; max-width: 300px;"
+                        onchange="loadHadits()">
+                        <option value="bukhari">Shahih Bukhari</option>
+                        <option value="muslim">Shahih Muslim</option>
+                        <option value="tirmidzi">Sunan At-Tirmidzi</option>
+                        <option value="nasai">Sunan An-Nasa'i</option>
+                        <option value="abu-daud">Sunan Abu Daud</option>
+                        <option value="ibnu-majah">Sunan Ibnu Majah</option>
+                        <option value="ahmad">Musnad Ahmad</option>
+                        <option value="darimi">Sunan Ad-Darimi</option>
+                        <option value="malik">Muwatta Malik</option>
+                    </select>
+                </div>
+                <div id="haditsContent">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn-primary" onclick="loadMoreHadits()">
+                        <i class="fas fa-plus"></i> Muat Hadits Lainnya
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prayer Times Section -->
+        <section id="prayer" class="content-section">
+            <div class="card">
+                <h2 style="margin-bottom: 20px; color: var(--primary);">
+                    <i class="fas fa-location-dot"></i> Jadwal Shalat
+                </h2>
+                <div class="location-input">
+                    <input type="text" id="cityInput"
+                        placeholder="Masukkan nama kota (contoh: Jakarta, Bandung, Surabaya)..." value="Jakarta">
+                    <button class="btn-primary" onclick="getPrayerTimes()">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                    <button class="btn-primary" onclick="getLocation()" title="Gunakan Lokasi Saat Ini">
+                        <i class="fas fa-location-arrow"></i>
+                    </button>
+                </div>
+                <div id="prayerTimesContent">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sijil Tsaksiyah Section -->
+        <section id="sijil" class="content-section">
+            <!-- Reading Tracker -->
+            <div class="reading-tracker">
+                <div class="tracker-header">
+                    <div>
+                        <h3 style="color: var(--primary); margin-bottom: 5px;">
+                            <i class="fas fa-chart-line"></i> Statistik Tadarus
+                        </h3>
+                        <p style="color: #666;">Otomatis tercatat saat membaca Al-Quran</p>
+                    </div>
+                    <button class="btn-primary" onclick="resetDailyStats()">
+                        <i class="fas fa-rotate-right"></i> Reset Harian
+                    </button>
+                </div>
+                <div class="reading-stats">
+                    <div class="reading-stat-box">
+                        <div class="reading-stat-number" id="ayahsReadToday">0</div>
+                        <div>Ayat Dibaca Hari Ini</div>
+                    </div>
+                    <div class="reading-stat-box">
+                        <div class="reading-stat-number" id="pagesReadToday">0</div>
+                        <div>Halaman Setara</div>
+                    </div>
+                    <div class="reading-stat-box">
+                        <div class="reading-stat-number" id="currentSurah">-</div>
+                        <div>Surah Terakhir</div>
+                    </div>
+                    <div class="reading-stat-box">
+                        <div class="reading-stat-number" id="readingStreak">0</div>
+                        <div>Hari Berturut-turut</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall Stats -->
+            <div class="stats-card">
+                <h3 style="margin-bottom: 10px;"><i class="fas fa-trophy"></i> Progress Harian</h3>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Selesai: <span id="completedCount">0</span>/<span id="totalCount">0</span></span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="ibadahScore">0</div>
+                        <div>Ibadah</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="olahragaScore">0</div>
+                        <div>Olahraga</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="sosialScore">0</div>
+                        <div>Sosial</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalScore">0</div>
+                        <div>Total Skor</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="date-header">
+                <div class="current-date" id="currentDate"></div>
+                <p style="color: #666; margin-top: 10px;" id="islamicDate"></p>
+            </div>
+
+            <div class="activity-grid" id="activityGrid">
+                <!-- Activities will be generated by JavaScript -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal for Quran Reading -->
+    <div id="quranModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Baca Al-Quran</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Global Variables
+        let currentSurah = null;
+        let currentAyah = 0;
+        let haditsPage = 1;
+        let activities = {};
+        let quranStats = {
+            ayahsRead: 0,
+            pagesRead: 0,
+            lastRead: null,
+            streak: 0,
+            lastDate: null
+        };
+
+        // Activity Categories
+        const activityCategories = {
+            ibadah: {
+                title: 'Ibadah',
+                icon: 'fa-pray',
+                color: '#1e3a5f',
+                items: [
+                    { id: 'shubuh', name: 'Shalat Shubuh', icon: 'fa-sun' },
+                    { id: 'dzuhur', name: 'Shalat Dzuhur', icon: 'fa-sun' },
+                    { id: 'ashar', name: 'Shalat Ashar', icon: 'fa-cloud-sun' },
+                    { id: 'maghrib', name: 'Shalat Maghrib', icon: 'fa-moon' },
+                    { id: 'isya', name: 'Shalat Isya', icon: 'fa-star' },
+                    { id: 'tahajjud', name: 'Shalat Tahajjud (Lail)', icon: 'fa-star-and-crescent' },
+                    { id: 'tadarus', name: 'Tadarus Quran & Terjemahan', icon: 'fa-book-quran', autoTrack: true },
+                    { id: 'puasa', name: 'Puasa Sunnah', icon: 'fa-utensils' }
+                ]
+            },
+            olahraga: {
+                title: 'Olahraga',
+                icon: 'fa-dumbbell',
+                color: '#e74c3c',
+                items: [
+                    { id: 'lari', name: 'Lari/Jogging', icon: 'fa-person-running' },
+                    { id: 'pushup', name: 'Push Up', icon: 'fa-hand-fist' },
+                    { id: 'angkatbeban', name: 'Angkat Beban', icon: 'fa-dumbbell' },
+                    { id: 'beladiri', name: 'Bela Diri', icon: 'fa-hand-sparkles' },
+                    { id: 'situp', name: 'Sit Up', icon: 'fa-user' },
+                    { id: 'futsal', name: 'Sepak Bola/Futsal', icon: 'fa-futbol' },
+                    { id: 'renang', name: 'Renang', icon: 'fa-person-swimming' }
+                ]
+            },
+            sosial: {
+                title: 'Sosial & Kajian',
+                icon: 'fa-users',
+                color: '#27ae60',
+                items: [
+                    { id: 'silaturahmi', name: 'Silaturahmi', icon: 'fa-handshake' },
+                    { id: 'kajian', name: 'Datang Kajian', icon: 'fa-book-open' }
+                ]
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSurahList();
+            loadHadits();
+            getPrayerTimes();
+            initializeSijil();
+            updateDate();
+            loadStats();
+
+            // Check for new day
+            checkNewDay();
+        });
+
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (sectionId === 'sijil') {
+                updateProgress();
+            }
+        }
+
+        // Update Date
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', options);
+
+            // Simple Islamic date approximation
+            const islamicMonths = ['Muharram', 'Safar', 'Rabiul Awal', 'Rabiul Akhir', 'Jumadil Awal', 'Jumadil Akhir', 'Rajab', 'Syaban', 'Ramadhan', 'Syawal', 'Dzulqadah', 'Dzulhijjah'];
+            // This is approximate - for production, use proper Islamic date calculation
+            document.getElementById('islamicDate').textContent = '1446 H'; // Update with actual calculation
+        }
+
+        // Load Surah List
+        async function loadSurahList() {
+            try {
+                const response = await fetch('https://equran.id/api/v2/surat');
+                const data = await response.json();
+
+                const surahList = document.getElementById('surahList');
+                surahList.innerHTML = '';
+
+                data.data.forEach(surah => {
+                    const surahDiv = document.createElement('div');
+                    surahDiv.className = 'surah-item';
+                    surahDiv.onclick = () => openSurah(surah.nomor);
+                    surahDiv.innerHTML = `
+                        <div class="surah-number">${surah.nomor}</div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">${surah.namaLatin}</div>
+                        <div style="font-size: 0.9em; color: #666;">${surah.arti} • ${surah.jumlahAyat} Ayat</div>
+                        <div style="font-family: 'Amiri', serif; font-size: 1.3em; text-align: right; margin-top: 10px;">
+                            ${surah.nama}
+                        </div>
+                    `;
+                    surahList.appendChild(surahDiv);
+                });
+            } catch (error) {
+                showNotification('Gagal memuat daftar surah', 'error');
+            }
+        }
+
+        // Open Surah
+        async function openSurah(surahNumber) {
+            try {
+                const response = await fetch(`https://equran.id/api/v2/surat/${surahNumber}`);
+                const data = await response.json();
+                currentSurah = data.data;
+
+                document.getElementById('surahListView').style.display = 'none';
+                document.getElementById('surahDetailView').style.display = 'block';
+
+                const content = document.getElementById('surahContent');
+                content.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h2 style="color: var(--primary); font-size: 2em;">${currentSurah.namaLatin}</h2>
+                        <p style="color: #666;">${currentSurah.arti} • ${currentSurah.jumlahAyat} Ayat • ${currentSurah.tempatTurun}</p>
+                    </div>
+                    ${surahNumber != 1 && surahNumber != 9 ? '<div class="bismillah">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>' : ''}
+                `;
+
+                currentSurah.ayat.forEach((ayah, index) => {
+                    const ayahCard = document.createElement('div');
+                    ayahCard.className = 'ayah-card';
+                    ayahCard.id = `ayah-${index}`;
+                    ayahCard.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                            <span class="ayah-number">${ayah.nomorAyat}</span>
+                            <button class="audio-btn" onclick="playAyah(${index})">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                        <div class="arabic-text">${ayah.teksArab}</div>
+                        <div class="translation">
+                            <strong>Terjemahan:</strong><br>
+                            ${ayah.teksIndonesia}
+                        </div>
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                            <button class="btn-primary btn-success" onclick="markAyahAsRead(${index}, ${surahNumber}, '${currentSurah.namaLatin}')">
+                                <i class="fas fa-check"></i> Tandai Sudah Dibaca & Catat di Sijil
+                            </button>
+                        </div>
+                    `;
+                    content.appendChild(ayahCard);
+                });
+
+                // Auto-track tadarus when opening surah
+                trackQuranReading(0, surahNumber, currentSurah.namaLatin, false);
+
+            } catch (error) {
+                showNotification('Gagal memuat surah', 'error');
+            }
+        }
+
+        function backToSurahList() {
+            document.getElementById('surahListView').style.display = 'block';
+            document.getElementById('surahDetailView').style.display = 'none';
+            currentSurah = null;
+        }
+
+        // Mark Ayah as Read
+        function markAyahAsRead(ayahIndex, surahNumber, surahName) {
+            trackQuranReading(ayahIndex + 1, surahNumber, surahName, true);
+
+            // Visual feedback
+            const ayahCard = document.getElementById(`ayah-${ayahIndex}`);
+            ayahCard.style.background = '#d4edda';
+            ayahCard.style.borderLeft = '5px solid var(--success)';
+
+            showNotification(`Ayat ${ayahIndex + 1} ${surahName} tercatat di Sijil Tsaksiyah!`);
+        }
+
+        // Track Quran Reading
+        function trackQuranReading(ayahNumber, surahNumber, surahName, isManual) {
+            const today = new Date().toDateString();
+
+            // Check if new day
+            if (quranStats.lastDate !== today) {
+                if (quranStats.lastDate === new Date(Date.now() - 86400000).toDateString()) {
+                    quranStats.streak++;
+                } else if (quranStats.lastDate !== today) {
+                    quranStats.streak = 1;
+                }
+                quranStats.ayahsRead = 0;
+                quranStats.lastDate = today;
+            }
+
+            if (isManual) {
+                quranStats.ayahsRead++;
+                quranStats.pagesRead = Math.ceil(quranStats.ayahsRead / 10); // Approximate
+            }
+
+            quranStats.lastRead = {
+                surah: surahName,
+                ayah: ayahNumber,
+                time: new Date()
+            };
+
+            // Auto-complete tadarus activity
+            completeActivity('tadarus');
+
+            saveStats();
+            updateReadingDisplay();
+        }
+
+        function completeActivity(activityId) {
+            const today = new Date().toDateString();
+            if (!activities[today]) activities[today] = {};
+            activities[today][activityId] = true;
+            localStorage.setItem('sijilActivities', JSON.stringify(activities));
+
+            // Update UI if in sijil section
+            const checkbox = document.querySelector(`[data-activity="${activityId}"]`);
+            if (checkbox && !checkbox.classList.contains('checked')) {
+                checkbox.classList.add('checked');
+                checkbox.closest('.activity-item').classList.add('completed');
+            }
+
+            updateProgress();
+        }
+
+        function updateReadingDisplay() {
+            document.getElementById('ayahsReadToday').textContent = quranStats.ayahsRead;
+            document.getElementById('pagesReadToday').textContent = quranStats.pagesRead;
+            document.getElementById('currentSurah').textContent = quranStats.lastRead ? quranStats.lastRead.surah : '-';
+            document.getElementById('readingStreak').textContent = quranStats.streak;
+        }
+
+        // Audio Functions
+        function playAyah(index) {
+            if (!currentSurah) return;
+            const audio = new Audio(currentSurah.ayat[index].audio['05']);
+            audio.play();
+        }
+
+        function playFullSurah() {
+            if (!currentSurah) return;
+            // Play first ayah as example
+            const audio = new Audio(currentSurah.ayat[0].audio['05']);
+            audio.play();
+            showNotification('Memutar audio surah...');
+        }
+
+        // Hadits Functions
+        async function loadHadits() {
+            const source = document.getElementById('haditsSource').value;
+            haditsPage = 1;
+            document.getElementById('haditsContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                // Using alternative API since original might be limited
+                const haditsData = getSampleHadits(source);
+                displayHadits(haditsData);
+            } catch (error) {
+                showNotification('Gagal memuat hadits', 'error');
+            }
+        }
+
+        function getSampleHadits(source) {
+            // Sample hadits data for demonstration
+            const samples = {
+                bukhari: [
+                    {
+                        arab: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى",
+                        indonesia: "Sesungguhnya amal itu tergantung pada niatnya, dan sesungguhnya setiap orang akan mendapatkan sesuai dengan niatnya.",
+                        perawi: "Umar bin Khattab",
+                        kitab: "Shahih Bukhari"
+                    },
+                    {
+                        arab: "بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلاَةِ، وَإِيتَاءِ الزَّكَاةِ، وَالْحَجِّ، وَصَوْمِ رَمَضَانَ",
+                        indonesia: "Islam dibangun di atas lima perkara: bersaksi bahwa tidak ada tuhan selain Allah dan Muhammad adalah utusan Allah, mendirikan shalat, menunaikan zakat, haji, dan puasa Ramadhan.",
+                        perawi: "Ibn Umar",
+                        kitab: "Shahih Bukhari"
+                    }
+                ],
+                muslim: [
+                    {
+                        arab: "مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ",
+                        indonesia: "Barangsiapa yang Allah kehendaki kebaikan baginya, niscaya Dia memahamkannya tentang agama (din).",
+                        perawi: "Muawiyah",
+                        kitab: "Shahih Muslim"
+                    }
+                ]
+            };
+
+            return samples[source] || samples.bukhari;
+        }
+
+        function displayHadits(haditsList) {
+            const container = document.getElementById('haditsContent');
+            container.innerHTML = '';
+
+            haditsList.forEach((hadits, index) => {
+                const haditsCard = document.createElement('div');
+                haditsCard.className = 'hadits-card';
+                haditsCard.innerHTML = `
+                    <div class="hadits-header">
+                        <span class="hadits-source">${hadits.kitab}</span>
+                        <span style="color: #666; font-size: 0.9em;">${hadits.perawi}</span>
+                    </div>
+                    <div class="hadits-arab">${hadits.arab}</div>
+                    <div class="hadits-translation">${hadits.indonesia}</div>
+                `;
+                container.appendChild(haditsCard);
+            });
+        }
+
+        function loadMoreHadits() {
+            showNotification('Memuat hadits tambahan...');
+            // In real implementation, fetch next page
+        }
+
+        // Prayer Times
+        async function getPrayerTimes() {
+            const city = document.getElementById('cityInput').value || 'Jakarta';
+            const container = document.getElementById('prayerTimesContent');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                // Using Aladhan API
+                const response = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Indonesia&method=11`);
+                const data = await response.json();
+
+                const timings = data.data.timings;
+                const prayers = [
+                    { name: 'Imsak', time: timings.Imsak, key: 'imsak' },
+                    { name: 'Subuh', time: timings.Fajr, key: 'fajr' },
+                    { name: 'Terbit', time: timings.Sunrise, key: 'sunrise' },
+                    { name: 'Dzuhur', time: timings.Dhuhr, key: 'dhuhr' },
+                    { name: 'Ashar', time: timings.Asr, key: 'asr' },
+                    { name: 'Maghrib', time: timings.Maghrib, key: 'maghrib' },
+                    { name: 'Isya', time: timings.Isha, key: 'isha' }
+                ];
+
+                let html = '<div class="prayer-times-grid">';
+                const currentTime = new Date();
+                const currentHour = currentTime.getHours();
+                const currentMinute = currentTime.getMinutes();
+                const currentTimeVal = currentHour * 60 + currentMinute;
+
+                prayers.forEach(prayer => {
+                    const [hour, minute] = prayer.time.split(':').map(Number);
+                    const prayerTimeVal = hour * 60 + minute;
+                    const isActive = Math.abs(currentTimeVal - prayerTimeVal) < 30; // Active if within 30 mins
+
+                    html += `
+                        <div class="prayer-card ${isActive ? 'active' : ''}">
+                            <div class="prayer-name">${prayer.name}</div>
+                            <div class="prayer-time">${prayer.time}</div>
+                            ${isActive ? '<div style="font-size: 0.8em; margin-top: 5px;"><i class="fas fa-bell"></i> Waktu Ini</div>' : ''}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+
+                // Add date info
+                const date = data.data.date;
+                html += `
+                    <div style="margin-top: 30px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 15px;">
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="fas fa-calendar-day"></i> ${date.readable}
+                        </h3>
+                        <p style="color: #666;">
+                            ${date.hijri.day} ${date.hijri.month.en} ${date.hijri.year} H
+                        </p>
+                        <p style="color: #666; margin-top: 5px;">
+                            <i class="fas fa-location-dot"></i> ${city}, Indonesia
+                        </p>
+                    </div>
+                `;
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                container.innerHTML = '<p style="text-align: center; color: #e74c3c;">Gagal memuat jadwal shalat. Silakan coba lagi.</p>';
+            }
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    try {
+                        const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=11`);
+                        const data = await response.json();
+                        document.getElementById('cityInput').value = data.data.meta.timezone.split('/')[1] || 'Lokasi Anda';
+                        displayPrayerTimes(data.data);
+                    } catch (error) {
+                        showNotification('Gagal mendapatkan lokasi', 'error');
+                    }
+                });
+            } else {
+                showNotification('Browser tidak mendukung geolokasi', 'error');
+            }
+        }
+
+        function displayPrayerTimes(data) {
+            // Similar to getPrayerTimes but with coordinates
+            getPrayerTimes(); // Fallback to city-based
+        }
+
+        // Sijil Tsaksiyah Functions
+        function initializeSijil() {
+            const grid = document.getElementById('activityGrid');
+            grid.innerHTML = '';
+
+            Object.entries(activityCategories).forEach(([key, category]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'activity-category';
+
+                let itemsHtml = '';
+                category.items.forEach(item => {
+                    const isCompleted = isActivityCompleted(item.id);
+                    itemsHtml += `
+                        <div class="activity-item ${isCompleted ? 'completed' : ''}">
+                            <div class="activity-info">
+                                <div class="activity-icon" style="background: ${category.color}">
+                                    <i class="fas ${item.icon}"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600;">${item.name}</div>
+                                    ${item.autoTrack ? '<div style="font-size: 0.8em; color: #27ae60;"><i class="fas fa-robot"></i> Auto-track</div>' : ''}
+                                </div>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <div class="custom-checkbox ${isCompleted ? 'checked' : ''}" 
+                                     data-activity="${item.id}"
+                                     onclick="toggleActivity('${item.id}')">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                categoryDiv.innerHTML = `
+                    <div class="category-title" style="border-color: ${category.color}">
+                        <i class="fas ${category.icon}"></i>
+                        ${category.title}
+                    </div>
+                    ${itemsHtml}
+                `;
+
+                grid.appendChild(categoryDiv);
+            });
+
+            updateProgress();
+        }
+
+        function isActivityCompleted(activityId) {
+            const today = new Date().toDateString();
+            return activities[today] && activities[today][activityId];
+        }
+
+        function toggleActivity(activityId) {
+            const today = new Date().toDateString();
+            if (!activities[today]) activities[today] = {};
+
+            activities[today][activityId] = !activities[today][activityId];
+            localStorage.setItem('sijilActivities', JSON.stringify(activities));
+
+            initializeSijil();
+
+            if (activities[today][activityId]) {
+                showNotification('Alhamdulillah! Aktivitas tercatat.');
+            }
+        }
+
+        function updateProgress() {
+            const today = new Date().toDateString();
+            if (!activities[today]) activities[today] = {};
+
+            let total = 0;
+            let completed = 0;
+            let ibadah = 0, olahraga = 0, sosial = 0;
+            let ibadahTotal = 0, olahragaTotal = 0, sosialTotal = 0;
+
+            Object.entries(activityCategories).forEach(([catKey, category]) => {
+                category.items.forEach(item => {
+                    total++;
+                    const isDone = activities[today][item.id];
+                    if (isDone) {
+                        completed++;
+                        if (catKey === 'ibadah') ibadah++;
+                        else if (catKey === 'olahraga') olahraga++;
+                        else if (catKey === 'sosial') sosial++;
+                    }
+
+                    if (catKey === 'ibadah') ibadahTotal++;
+                    else if (catKey === 'olahraga') olahragaTotal++;
+                    else if (catKey === 'sosial') sosialTotal++;
+                });
+            });
+
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+
+            document.getElementById('ibadahScore').textContent = `${ibadah}/${ibadahTotal}`;
+            document.getElementById('olahragaScore').textContent = `${olahraga}/${olahragaTotal}`;
+            document.getElementById('sosialScore').textContent = `${sosial}/${sosialTotal}`;
+            document.getElementById('totalScore').textContent = completed;
+        }
+
+        function resetDailyStats() {
+            if (confirm('Yakin ingin reset statistik hari ini?')) {
+                const today = new Date().toDateString();
+                activities[today] = {};
+                quranStats.ayahsRead = 0;
+                quranStats.pagesRead = 0;
+                localStorage.setItem('sijilActivities', JSON.stringify(activities));
+                saveStats();
+                initializeSijil();
+                updateReadingDisplay();
+                showNotification('Statistik hari ini telah direset');
+            }
+        }
+
+        // Storage Functions
+        function saveStats() {
+            localStorage.setItem('quranStats', JSON.stringify(quranStats));
+        }
+
+        function loadStats() {
+            const savedActivities = localStorage.getItem('sijilActivities');
+            if (savedActivities) activities = JSON.parse(savedActivities);
+
+            const savedStats = localStorage.getItem('quranStats');
+            if (savedStats) {
+                quranStats = JSON.parse(savedStats);
+                updateReadingDisplay();
+            }
+        }
+
+        function checkNewDay() {
+            const today = new Date().toDateString();
+            if (quranStats.lastDate && quranStats.lastDate !== today) {
+                // New day - reset daily counts but keep streak
+                if (quranStats.lastDate !== new Date(Date.now() - 86400000).toDateString()) {
+                    quranStats.streak = 0;
+                }
+            }
+        }
+
+        // Utility Functions
+        function showNotification(message, type = 'success') {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.style.background = type === 'error' ? '#e74c3c' : '#27ae60';
+            notif.style.display = 'block';
+
+            setTimeout(() => {
+                notif.style.display = 'none';
+            }, 3000);
+        }
+
+        function closeModal() {
+            document.getElementById('quranModal').classList.remove('active');
+        }
+
+        // Auto-save on before unload
+        window.onbeforeunload = function () {
+            saveStats();
+            localStorage.setItem('sijilActivities', JSON.stringify(activities));
+        };
+    </script>
+</body>
+
+</html>
