@@ -10,29 +10,52 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ==========================================
+           CSS VARIABLES - LIGHT MODE (DEFAULT)
+           ========================================== */
         :root {
             --primary: #064E3B;
-            /* Deep Islamic Green */
             --secondary: #047857;
-            /* Emerald Green */
             --accent: #D4AF37;
-            /* Elegant Gold */
             --bg: #F3F4F6;
             --card: #ffffff;
             --text: #1F2937;
+            --text-secondary: #6B7280;
+            --border: rgba(0, 0, 0, 0.05);
+            --shadow: rgba(0, 0, 0, 0.1);
             --success: #10B981;
             --warning: #F59E0B;
+            --gradient-start: #F9FAFB;
+            --gradient-end: #E5E7EB;
+        }
+
+        /* ==========================================
+           DARK MODE VARIABLES
+           ========================================== */
+        [data-theme="dark"] {
+            --primary: #10B981;
+            --secondary: #34D399;
+            --accent: #FBBF24;
+            --bg: #0F172A;
+            --card: #1E293B;
+            --text: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+            --gradient-start: #0F172A;
+            --gradient-end: #1E293B;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
             min-height: 100vh;
             color: var(--text);
         }
@@ -43,6 +66,9 @@
             padding: 20px;
         }
 
+        /* ==========================================
+           HEADER & THEME TOGGLE
+           ========================================== */
         header {
             background: var(--primary);
             border-radius: 24px;
@@ -52,10 +78,44 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            /* Islamic pattern subtle overlay */
             background-image: radial-gradient(rgba(212, 175, 55, 0.1) 2px, transparent 2px), radial-gradient(rgba(212, 175, 55, 0.1) 2px, transparent 2px);
             background-size: 40px 40px;
             background-position: 0 0, 20px 20px;
+        }
+
+        .header-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        [data-theme="dark"] .control-btn {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--accent);
         }
 
         h1 {
@@ -77,6 +137,9 @@
             z-index: 1;
         }
 
+        /* ==========================================
+           NAVIGATION
+           ========================================== */
         .nav-tabs {
             display: flex;
             gap: 10px;
@@ -87,14 +150,14 @@
 
         .nav-btn {
             padding: 15px 30px;
-            border: 1px solid rgba(6, 78, 59, 0.1);
+            border: 1px solid var(--border);
             background: var(--card);
             border-radius: 50px;
             cursor: pointer;
             font-size: 1.05em;
             font-weight: 600;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px var(--shadow);
             color: var(--primary);
             display: flex;
             align-items: center;
@@ -108,6 +171,14 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(6, 78, 59, 0.25);
             border-color: var(--primary);
+        }
+
+        [data-theme="dark"] .nav-btn {
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .nav-btn.active {
+            color: var(--accent);
         }
 
         .content-section {
@@ -136,10 +207,231 @@
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px var(--shadow);
+            border: 1px solid var(--border);
         }
 
-        /* Quran Styles */
+        /* ==========================================
+           QIBLA COMPASS STYLES
+           ========================================== */
+        .qibla-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .compass-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 30px auto;
+        }
+
+        .compass-outer {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--card), var(--bg));
+            box-shadow: 
+                20px 20px 60px var(--shadow),
+                -20px -20px 60px rgba(255, 255, 255, 0.1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 8px solid var(--accent);
+        }
+
+        [data-theme="dark"] .compass-outer {
+            background: linear-gradient(145deg, #1E293B, #0F172A);
+            box-shadow: 
+                20px 20px 60px rgba(0, 0, 0, 0.5),
+                -20px -20px 60px rgba(255, 255, 255, 0.05);
+        }
+
+        .compass-inner {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: var(--card);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+        }
+
+        [data-theme="dark"] .compass-inner {
+            background: #1E293B;
+        }
+
+        .compass-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .compass-marker {
+            position: absolute;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: var(--text-secondary);
+        }
+
+        .marker-n { top: 10px; left: 50%; transform: translateX(-50%); color: #e74c3c; font-size: 1.2em; }
+        .marker-s { bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .marker-e { right: 10px; top: 50%; transform: translateY(-50%); }
+        .marker-w { left: 10px; top: 50%; transform: translateY(-50%); }
+
+        .compass-needle {
+            width: 4px;
+            height: 120px;
+            background: linear-gradient(to bottom, #e74c3c 50%, #2c3e50 50%);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%) translateY(-100%) rotate(0deg);
+            border-radius: 2px;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+
+        .compass-needle::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 15px solid #e74c3c;
+        }
+
+        .compass-needle::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 15px solid #2c3e50;
+        }
+
+        .qibla-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+        .qibla-arrow {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid var(--accent);
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .qibla-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .compass-center {
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            border: 3px solid var(--accent);
+        }
+
+        .qibla-info {
+            background: var(--card);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .qibla-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .qibla-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .qibla-info-label {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .qibla-info-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .calibrate-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calibrate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(6, 78, 59, 0.3);
+        }
+
+        .calibrate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ==========================================
+           QURAN STYLES
+           ========================================== */
         .surah-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -154,8 +446,8 @@
             border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 10px var(--shadow);
         }
 
         .surah-item:hover {
@@ -188,25 +480,30 @@
             margin: 20px 0;
         }
 
+        [data-theme="dark"] .arabic-text {
+            color: var(--secondary);
+        }
+
         .translation {
             text-align: left;
-            color: #555;
+            color: var(--text-secondary);
             line-height: 1.8;
             padding: 15px;
-            background: #f8f9fa;
+            background: var(--bg);
             border-radius: 10px;
             margin-top: 10px;
             border-left: 4px solid var(--accent);
         }
 
         .ayah-card {
-            background: white;
+            background: var(--card);
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 20px var(--shadow);
             transition: all 0.3s;
             scroll-margin-top: 100px;
+            border: 1px solid var(--border);
         }
 
         .ayah-card:hover {
@@ -214,7 +511,7 @@
         }
 
         .ayah-card.playing {
-            background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, var(--card) 100%);
             border: 2px solid var(--accent);
             transform: scale(1.02);
             box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
@@ -255,14 +552,17 @@
             background: linear-gradient(135deg, #10B981 0%, #059669 100%);
         }
 
-        /* Hadits Styles */
+        /* ==========================================
+           HADITS STYLES
+           ========================================== */
         .hadits-card {
-            background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, var(--card) 100%);
             border-right: 5px solid var(--accent);
             padding: 25px;
             margin-bottom: 20px;
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 20px var(--shadow);
+            border: 1px solid var(--border);
         }
 
         .hadits-header {
@@ -289,16 +589,18 @@
             line-height: 2;
             text-align: right;
             margin: 15px 0;
-            color: #1a1a1a;
+            color: var(--text);
         }
 
         .hadits-translation {
-            color: #555;
+            color: var(--text-secondary);
             line-height: 1.8;
             font-style: italic;
         }
 
-        /* Prayer Times Styles */
+        /* ==========================================
+           PRAYER TIMES STYLES
+           ========================================== */
         .prayer-times-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -315,7 +617,7 @@
             position: relative;
             overflow: hidden;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px var(--shadow);
         }
 
         .prayer-card:hover {
@@ -362,12 +664,16 @@
         .location-input input {
             flex: 1;
             padding: 12px;
-            border: 2px solid #ddd;
+            border: 2px solid var(--border);
             border-radius: 10px;
             font-size: 1em;
+            background: var(--card);
+            color: var(--text);
         }
 
-        /* Sijil Tsaksiyah Styles */
+        /* ==========================================
+           SIJIL STYLES
+           ========================================== */
         .date-header {
             text-align: center;
             margin-bottom: 30px;
@@ -386,10 +692,11 @@
         }
 
         .activity-category {
-            background: white;
+            background: var(--card);
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 20px var(--shadow);
+            border: 1px solid var(--border);
         }
 
         .category-title {
@@ -409,18 +716,19 @@
             justify-content: space-between;
             padding: 15px;
             margin-bottom: 10px;
-            background: #f8f9fa;
+            background: var(--bg);
             border-radius: 12px;
             transition: all 0.3s;
+            border: 1px solid var(--border);
         }
 
         .activity-item:hover {
-            background: #e9ecef;
+            background: var(--card);
             transform: translateX(5px);
         }
 
         .activity-item.completed {
-            background: #d4edda;
+            background: rgba(16, 185, 129, 0.1);
             border-left: 4px solid var(--success);
         }
 
@@ -514,9 +822,8 @@
             transition: width 0.5s;
         }
 
-        /* Reading Tracker */
         .reading-tracker {
-            background: linear-gradient(135deg, #fff3cd 0%, #fff 100%);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, var(--card) 100%);
             border: 2px solid var(--accent);
             border-radius: 20px;
             padding: 25px;
@@ -539,11 +846,12 @@
         }
 
         .reading-stat-box {
-            background: white;
+            background: var(--card);
             padding: 20px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px var(--shadow);
+            border: 1px solid var(--border);
         }
 
         .reading-stat-number {
@@ -552,7 +860,9 @@
             color: var(--primary);
         }
 
-        /* Modal */
+        /* ==========================================
+           MODAL & NOTIFICATION
+           ========================================== */
         .modal {
             display: none;
             position: fixed;
@@ -572,13 +882,13 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--card);
             border-radius: 25px;
             max-width: 800px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            position: relative;
+            border: 1px solid var(--border);
         }
 
         .modal-header {
@@ -612,53 +922,7 @@
 
         .modal-body {
             padding: 25px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .nav-btn {
-                padding: 12px 20px;
-                font-size: 0.9em;
-            }
-
-            .arabic-text {
-                font-size: 1.4em;
-            }
-
-            .prayer-times-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Loading */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 50px;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            color: var(--text);
         }
 
         .notification {
@@ -726,12 +990,112 @@
             color: var(--primary);
             margin: 30px 0;
         }
+
+        /* ==========================================
+           LOADING & RESPONSIVE
+           ========================================== */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--bg);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+
+            .arabic-text {
+                font-size: 1.4em;
+            }
+
+            .prayer-times-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .compass-wrapper {
+                width: 250px;
+                height: 250px;
+            }
+
+            .compass-inner {
+                width: 210px;
+                height: 210px;
+            }
+
+            .header-controls {
+                top: 10px;
+                right: 10px;
+            }
+
+            .control-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1em;
+            }
+        }
+
+        /* Permission dialog */
+        .permission-dialog {
+            background: var(--card);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid var(--accent);
+            text-align: center;
+        }
+
+        .permission-dialog i {
+            font-size: 3em;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .permission-dialog h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .permission-dialog p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <header>
+            <div class="header-controls">
+                <button class="control-btn" onclick="toggleTheme()" title="Toggle Dark Mode">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
             <h1><i class="fas fa-mosque"></i> QuranBersama</h1>
             <p class="subtitle">Al-Quran, Hadits Shahih, Jadwal Shalat & Catatan Amal Harian</p>
         </header>
@@ -745,6 +1109,9 @@
             </button>
             <button class="nav-btn" onclick="showSection('prayer')">
                 <i class="fas fa-clock"></i> Jadwal Shalat
+            </button>
+            <button class="nav-btn" onclick="showSection('qibla')">
+                <i class="fas fa-compass"></i> Arah Kiblat
             </button>
             <button class="nav-btn" onclick="showSection('sijil')">
                 <i class="fas fa-clipboard-check"></i> Kegiatan Harian
@@ -839,9 +1206,81 @@
             </div>
         </section>
 
+        <!-- Qibla Section (NEW) -->
+        <section id="qibla" class="content-section">
+            <div class="card">
+                <h2 style="margin-bottom: 20px; color: var(--primary);">
+                    <i class="fas fa-compass"></i> Penunjuk Arah Kiblat
+                </h2>
+                
+                <div id="qiblaPermission" class="permission-dialog" style="display: none;">
+                    <i class="fas fa-compass"></i>
+                    <h3>Izin Diperlukan</h3>
+                    <p>Untuk menampilkan arah kiblat dengan akurat, kami memerlukan akses ke lokasi dan orientasi perangkat Anda.</p>
+                    <button class="btn-primary" onclick="requestQiblaPermission()">
+                        <i class="fas fa-location-arrow"></i> Izinkan Akses
+                    </button>
+                </div>
+
+                <div id="qiblaContent" style="display: none;">
+                    <div class="qibla-container">
+                        <div class="compass-wrapper">
+                            <div class="compass-outer">
+                                <div class="compass-inner">
+                                    <div class="compass-face">
+                                        <span class="compass-marker marker-n">N</span>
+                                        <span class="compass-marker marker-e">E</span>
+                                        <span class="compass-marker marker-s">S</span>
+                                        <span class="compass-marker marker-w">W</span>
+                                    </div>
+                                    <div class="compass-needle" id="compassNeedle"></div>
+                                    <div class="qibla-indicator" id="qiblaIndicator" style="display: none;">
+                                        <div class="qibla-arrow"></div>
+                                        <div class="qibla-label">KIBLAT</div>
+                                    </div>
+                                    <div class="compass-center"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="qibla-info">
+                            <div class="qibla-info-item">
+                                <span class="qibla-info-label">Arah Kiblat</span>
+                                <span class="qibla-info-value" id="qiblaDirection">-</span>
+                            </div>
+                            <div class="qibla-info-item">
+                                <span class="qibla-info-label">Jarak ke Ka'bah</span>
+                                <span class="qibla-info-value" id="qiblaDistance">-</span>
+                            </div>
+                            <div class="qibla-info-item">
+                                <span class="qibla-info-label">Lokasi Anda</span>
+                                <span class="qla-info-value" id="userLocation">-</span>
+                            </div>
+                            <div class="qibla-info-item">
+                                <span class="qibla-info-label">Orientasi</span>
+                                <span class="qibla-info-value" id="deviceOrientation">-</span>
+                            </div>
+                        </div>
+
+                        <button class="calibrate-btn" onclick="calibrateCompass()" id="calibrateBtn">
+                            <i class="fas fa-sync-alt"></i> Kalibrasi Ulang
+                        </button>
+                        
+                        <p style="margin-top: 15px; color: var(--text-secondary); font-size: 0.9em;">
+                            <i class="fas fa-info-circle"></i> 
+                            Arahkan ujung merah jarum kompas ke arah Utara (N) untuk menemukan kiblat
+                        </p>
+                    </div>
+                </div>
+
+                <div id="qiblaLoading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+
         <!-- Sijil Tsaksiyah Section -->
         <section id="sijil" class="content-section">
-            <!-- Reading Tracker -->
             <div class="reading-tracker">
                 <div class="tracker-header">
                     <div>
@@ -874,7 +1313,6 @@
                 </div>
             </div>
 
-            <!-- Overall Stats -->
             <div class="stats-card">
                 <h3 style="margin-bottom: 10px;"><i class="fas fa-trophy"></i> Progress Harian</h3>
                 <div style="margin-bottom: 15px;">
@@ -917,16 +1355,14 @@
         </section>
     </div>
 
-    <!-- Modal for Quran Reading -->
+    <!-- Modal -->
     <div id="quranModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modalTitle">Baca Al-Quran</h3>
                 <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Content -->
-            </div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
 
@@ -951,6 +1387,43 @@
             streak: 0,
             lastDate: null
         };
+
+        // Qibla variables
+        let qiblaData = {
+            latitude: null,
+            longitude: null,
+            qiblaAngle: null,
+            distance: null,
+            deviceHeading: 0
+        };
+        let compassEventListener = null;
+
+        // ==========================================
+        // THEME MANAGEMENT
+        // ==========================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('quranbersama-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('quranbersama-theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            showNotification(newTheme === 'dark' ? 'Dark Mode diaktifkan' : 'Light Mode diaktifkan');
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
 
         // ==========================================
         // ACTIVITY CATEGORIES
@@ -1000,6 +1473,7 @@
         // INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function () {
+            initTheme();
             loadSurahList();
             loadHadits();
             getPrayerTimes();
@@ -1025,6 +1499,10 @@
 
             if (sectionId === 'sijil') {
                 updateProgress();
+            } else if (sectionId === 'qibla') {
+                initQibla();
+            } else {
+                stopCompass();
             }
         }
 
@@ -1036,33 +1514,240 @@
         }
 
         // ==========================================
-        // AUDIO PLAYER SYSTEM - FULLY REWRITTEN
+        // QIBLA COMPASS FUNCTIONS
         // ==========================================
-        
-        // Helper: Get audio URL from ayah object
+        function initQibla() {
+            const permissionDiv = document.getElementById('qiblaPermission');
+            const contentDiv = document.getElementById('qiblaContent');
+            const loadingDiv = document.getElementById('qiblaLoading');
+
+            // Check if we already have permission
+            if (qiblaData.latitude && qiblaData.longitude) {
+                permissionDiv.style.display = 'none';
+                loadingDiv.style.display = 'none';
+                contentDiv.style.display = 'block';
+                startCompass();
+                return;
+            }
+
+            // Check if geolocation is available
+            if (!navigator.geolocation) {
+                showNotification('Browser tidak mendukung geolokasi', 'error');
+                return;
+            }
+
+            permissionDiv.style.display = 'block';
+            loadingDiv.style.display = 'none';
+            contentDiv.style.display = 'none';
+        }
+
+        function requestQiblaPermission() {
+            const permissionDiv = document.getElementById('qiblaPermission');
+            const contentDiv = document.getElementById('qiblaContent');
+            const loadingDiv = document.getElementById('qiblaLoading');
+
+            permissionDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    qiblaData.latitude = position.coords.latitude;
+                    qiblaData.longitude = position.coords.longitude;
+                    
+                    // Calculate Qibla direction
+                    calculateQibla();
+                    
+                    // Get location name
+                    getLocationName(qiblaData.latitude, qiblaData.longitude);
+                    
+                    loadingDiv.style.display = 'none';
+                    contentDiv.style.display = 'block';
+                    
+                    startCompass();
+                    showNotification('Lokasi berhasil dideteksi');
+                },
+                (error) => {
+                    loadingDiv.style.display = 'none';
+                    permissionDiv.style.display = 'block';
+                    showNotification('Gagal mendapatkan lokasi: ' + error.message, 'error');
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+
+        function calculateQibla() {
+            // Ka'bah coordinates
+            const kaabaLat = 21.422487;
+            const kaabaLng = 39.826206;
+            
+            const userLat = qiblaData.latitude * Math.PI / 180;
+            const userLng = qiblaData.longitude * Math.PI / 180;
+            const kaabaLatRad = kaabaLat * Math.PI / 180;
+            const kaabaLngRad = kaabaLng * Math.PI / 180;
+            
+            // Calculate Qibla angle
+            const y = Math.sin(kaabaLngRad - userLng);
+            const x = Math.cos(userLat) * Math.tan(kaabaLatRad) - Math.sin(userLat) * Math.cos(kaabaLngRad - userLng);
+            
+            let qiblaAngle = Math.atan2(y, x) * 180 / Math.PI;
+            qiblaAngle = (qiblaAngle + 360) % 360;
+            
+            qiblaData.qiblaAngle = qiblaAngle;
+            
+            // Calculate distance
+            const R = 6371; // Earth's radius in km
+            const dLat = kaabaLatRad - userLat;
+            const dLng = kaabaLngRad - userLng;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(userLat) * Math.cos(kaabaLatRad) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+            
+            qiblaData.distance = distance;
+            
+            // Update UI
+            document.getElementById('qiblaDirection').textContent = qiblaAngle.toFixed(1) + '°';
+            document.getElementById('qiblaDistance').textContent = distance.toFixed(0) + ' km';
+            
+            // Show Qibla indicator
+            const indicator = document.getElementById('qiblaIndicator');
+            if (indicator) {
+                indicator.style.display = 'block';
+                indicator.style.transform = `translate(-50%, -50%) rotate(${qiblaAngle}deg)`;
+            }
+        }
+
+        function getLocationName(lat, lng) {
+            // Simple reverse geocoding using OpenStreetMap
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`)
+                .then(response => response.json())
+                .then(data => {
+                    const location = data.display_name.split(',').slice(0, 2).join(', ');
+                    document.getElementById('userLocation').textContent = location;
+                })
+                .catch(() => {
+                    document.getElementById('userLocation').textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                });
+        }
+
+        function startCompass() {
+            // Check for DeviceOrientationEvent
+            if (window.DeviceOrientationEvent) {
+                // iOS 13+ requires permission
+                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(permissionState => {
+                            if (permissionState === 'granted') {
+                                addCompassListener();
+                            } else {
+                                showNotification('Izin orientasi ditolak', 'error');
+                                // Fallback to manual mode
+                                document.getElementById('deviceOrientation').textContent = 'Manual';
+                            }
+                        })
+                        .catch(console.error);
+                } else {
+                    addCompassListener();
+                }
+            } else {
+                showNotification('Kompas tidak didukung di perangkat ini', 'error');
+                document.getElementById('deviceOrientation').textContent = 'Tidak tersedia';
+            }
+        }
+
+        function addCompassListener() {
+            compassEventListener = (event) => {
+                let heading = 0;
+                
+                // iOS
+                if (event.webkitCompassHeading) {
+                    heading = event.webkitCompassHeading;
+                }
+                // Android
+                else if (event.alpha !== null) {
+                    heading = 360 - event.alpha;
+                }
+                
+                qiblaData.deviceHeading = heading;
+                updateCompass(heading);
+            };
+            
+            window.addEventListener('deviceorientation', compassEventListener);
+        }
+
+        function updateCompass(heading) {
+            const needle = document.getElementById('compassNeedle');
+            if (needle) {
+                needle.style.transform = `translateX(-50%) translateY(-100%) rotate(${heading}deg)`;
+            }
+            
+            // Update orientation text
+            const directions = ['Utara', 'Timur Laut', 'Timur', 'Tenggara', 'Selatan', 'Barat Daya', 'Barat', 'Barat Laut'];
+            const index = Math.round(heading / 45) % 8;
+            document.getElementById('deviceOrientation').textContent = directions[index] + ` (${Math.round(heading)}°)`;
+            
+            // Check if facing qibla (within 15 degrees)
+            if (qiblaData.qiblaAngle) {
+                const diff = Math.abs(heading - qiblaData.qiblaAngle);
+                const normalizedDiff = Math.min(diff, 360 - diff);
+                
+                if (normalizedDiff < 15) {
+                    document.getElementById('deviceOrientation').innerHTML += ' <span style="color: var(--success);">✓ Kiblat</span>';
+                }
+            }
+        }
+
+        function stopCompass() {
+            if (compassEventListener) {
+                window.removeEventListener('deviceorientation', compassEventListener);
+                compassEventListener = null;
+            }
+        }
+
+        function calibrateCompass() {
+            const btn = document.getElementById('calibrateBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengkalibrasi...';
+            
+            // Re-request location
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    qiblaData.latitude = position.coords.latitude;
+                    qiblaData.longitude = position.coords.longitude;
+                    calculateQibla();
+                    getLocationName(qiblaData.latitude, qiblaData.longitude);
+                    
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Kalibrasi Ulang';
+                    showNotification('Kompas berhasil dikalibrasi');
+                },
+                (error) => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Kalibrasi Ulang';
+                    showNotification('Gagal mengkalibrasi: ' + error.message, 'error');
+                }
+            );
+        }
+
+        // ==========================================
+        // AUDIO PLAYER SYSTEM
+        // ==========================================
         function getAudioUrl(ayah) {
             if (!ayah || !ayah.audio) return null;
-            
-            // Try different audio qualities
             const preferences = ['05', '04', '03', '02', '01'];
             for (let pref of preferences) {
                 if (ayah.audio[pref]) return ayah.audio[pref];
             }
-            
-            // Fallback to first available
             const keys = Object.keys(ayah.audio);
             if (keys.length > 0) return ayah.audio[keys[0]];
-            
             return null;
         }
 
-        // Helper: Reset all UI states
         function resetAllAudioUI() {
-            // Reset all ayah play buttons
             document.querySelectorAll('.ayah-card').forEach(card => {
                 card.classList.remove('playing');
             });
-            
             document.querySelectorAll('.audio-btn').forEach(btn => {
                 btn.classList.remove('playing');
                 const icon = btn.querySelector('i');
@@ -1070,18 +1755,14 @@
                     icon.className = 'fas fa-play';
                 }
             });
-            
-            // Reset full surah button
             const fullSurahBtn = document.getElementById('fullSurahBtn');
             const fullSurahIcon = document.getElementById('fullSurahBtnIcon');
             const fullSurahText = document.getElementById('fullSurahBtnText');
-            
             if (fullSurahBtn) fullSurahBtn.classList.remove('playing');
             if (fullSurahIcon) fullSurahIcon.className = 'fas fa-play';
             if (fullSurahText) fullSurahText.textContent = 'Dengar Surah';
         }
 
-        // Helper: Stop all audio completely
         function stopAllAudio() {
             if (currentAudio) {
                 currentAudio.pause();
@@ -1091,23 +1772,16 @@
                 currentAudio.onpause = null;
                 currentAudio = null;
             }
-            
             isPlayingFullSurah = false;
             resetAllAudioUI();
         }
 
-        // Play specific ayah (interrupts full surah if playing)
         function playAyah(index) {
-            // If clicking the same ayah that's currently playing (and not in full surah mode)
             if (currentPlayingAyahIndex === index && currentAudio && !isPlayingFullSurah) {
                 stopAllAudio();
                 return;
             }
-            
-            // Stop any currently playing audio
             stopAllAudio();
-            
-            // Set to single ayah mode
             isPlayingFullSurah = false;
             currentPlayingAyahIndex = index;
             
@@ -1124,10 +1798,7 @@
                 return;
             }
             
-            // Create and play audio
             currentAudio = new Audio(audioUrl);
-            
-            // Update UI for this ayah
             const ayahCard = document.getElementById(`ayah-${index}`);
             const playBtn = ayahCard ? ayahCard.querySelector('.audio-btn') : null;
             const playIcon = playBtn ? playBtn.querySelector('i') : null;
@@ -1136,24 +1807,20 @@
             if (playBtn) playBtn.classList.add('playing');
             if (playIcon) playIcon.className = 'fas fa-pause';
             
-            // Auto-scroll to ayat
             if (ayahCard) {
                 ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             
-            // Play audio
             currentAudio.play().catch(err => {
                 console.error('Audio play error:', err);
                 showNotification('Gagal memutar audio', 'error');
                 stopAllAudio();
             });
             
-            // When finished
             currentAudio.onended = () => {
                 stopAllAudio();
             };
             
-            // Handle errors
             currentAudio.onerror = () => {
                 console.error('Audio error');
                 stopAllAudio();
@@ -1161,44 +1828,30 @@
             };
         }
 
-        // Toggle full surah playback
         function toggleFullSurah() {
-            // If already playing full surah, stop it
             if (isPlayingFullSurah && currentAudio) {
                 stopAllAudio();
                 currentPlayingAyahIndex = 0;
                 return;
             }
-            
-            // If playing single ayah, stop it first
             if (currentAudio) {
                 stopAllAudio();
             }
-            
-            // Start full surah from beginning or current position
             isPlayingFullSurah = true;
-            
-            // Update full surah button UI
             const fullSurahBtn = document.getElementById('fullSurahBtn');
             const fullSurahIcon = document.getElementById('fullSurahBtnIcon');
             const fullSurahText = document.getElementById('fullSurahBtnText');
-            
             if (fullSurahBtn) fullSurahBtn.classList.add('playing');
             if (fullSurahIcon) fullSurahIcon.className = 'fas fa-pause';
             if (fullSurahText) fullSurahText.textContent = 'Jeda';
-            
             playNextAyahInSequence();
         }
 
-        // Play ayahs in sequence for full surah mode
         function playNextAyahInSequence() {
-            // Safety checks
             if (!isPlayingFullSurah || !currentSurah) {
                 stopAllAudio();
                 return;
             }
-            
-            // Check if we've reached the end
             if (currentPlayingAyahIndex >= currentSurah.ayat.length) {
                 showNotification('Selesai memutar surah', 'success');
                 stopAllAudio();
@@ -1210,16 +1863,12 @@
             const audioUrl = getAudioUrl(ayah);
             
             if (!audioUrl) {
-                // Skip to next if no audio
                 currentPlayingAyahIndex++;
                 playNextAyahInSequence();
                 return;
             }
             
-            // Reset previous ayah UI
             resetAllAudioUI();
-            
-            // Update UI for current ayah
             const ayahCard = document.getElementById(`ayah-${currentPlayingAyahIndex}`);
             const playBtn = ayahCard ? ayahCard.querySelector('.audio-btn') : null;
             const playIcon = playBtn ? playBtn.querySelector('i') : null;
@@ -1228,36 +1877,29 @@
             if (playBtn) playBtn.classList.add('playing');
             if (playIcon) playIcon.className = 'fas fa-pause';
             
-            // Keep full surah button in playing state
             const fullSurahBtn = document.getElementById('fullSurahBtn');
             const fullSurahIcon = document.getElementById('fullSurahBtnIcon');
             const fullSurahText = document.getElementById('fullSurahBtnText');
-            
             if (fullSurahBtn) fullSurahBtn.classList.add('playing');
             if (fullSurahIcon) fullSurahIcon.className = 'fas fa-pause';
             if (fullSurahText) fullSurahText.textContent = 'Jeda';
             
-            // Auto-scroll smoothly
             if (ayahCard) {
                 ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             
-            // Play audio
             currentAudio = new Audio(audioUrl);
-            
             currentAudio.play().catch(err => {
                 console.error('Audio play error:', err);
                 currentPlayingAyahIndex++;
                 playNextAyahInSequence();
             });
             
-            // When this ayah finishes, play next
             currentAudio.onended = () => {
                 currentPlayingAyahIndex++;
                 playNextAyahInSequence();
             };
             
-            // Handle errors
             currentAudio.onerror = () => {
                 console.error('Audio error on ayah', currentPlayingAyahIndex);
                 currentPlayingAyahIndex++;
@@ -1272,7 +1914,6 @@
             try {
                 const response = await fetch('https://equran.id/api/v2/surat');
                 const data = await response.json();
-
                 const surahList = document.getElementById('surahList');
                 surahList.innerHTML = '';
 
@@ -1300,7 +1941,7 @@
                 const response = await fetch(`https://equran.id/api/v2/surat/${surahNumber}`);
                 const data = await response.json();
                 currentSurah = data.data;
-                currentPlayingAyahIndex = 0; // Reset position
+                currentPlayingAyahIndex = 0;
 
                 document.getElementById('surahListView').style.display = 'none';
                 document.getElementById('surahDetailView').style.display = 'block';
@@ -1339,7 +1980,6 @@
                     content.appendChild(ayahCard);
                 });
 
-                // Auto-track tadarus
                 trackQuranReading(0, surahNumber, currentSurah.namaLatin, false);
 
             } catch (error) {
@@ -1348,24 +1988,20 @@
         }
 
         function backToSurahList() {
-            // CRITICAL: Stop audio when going back
             stopAllAudio();
             currentPlayingAyahIndex = 0;
             currentSurah = null;
-
             document.getElementById('surahListView').style.display = 'block';
             document.getElementById('surahDetailView').style.display = 'none';
         }
 
         function markAyahAsRead(ayahIndex, surahNumber, surahName) {
             trackQuranReading(ayahIndex + 1, surahNumber, surahName, true);
-
             const ayahCard = document.getElementById(`ayah-${ayahIndex}`);
             if (ayahCard) {
                 ayahCard.style.background = '#d4edda';
                 ayahCard.style.borderLeft = '5px solid var(--success)';
             }
-
             showNotification(`Ayat ${ayahIndex + 1} ${surahName} tercatat di Kegiatan Harian!`);
         }
 
@@ -1374,7 +2010,6 @@
         // ==========================================
         function trackQuranReading(ayahNumber, surahNumber, surahName, isManual) {
             const today = new Date().toDateString();
-
             if (quranStats.lastDate !== today) {
                 if (quranStats.lastDate === new Date(Date.now() - 86400000).toDateString()) {
                     quranStats.streak++;
@@ -1465,14 +2100,12 @@
                     }
                 ]
             };
-
             return samples[source] || samples.bukhari;
         }
 
         function displayHadits(haditsList) {
             const container = document.getElementById('haditsContent');
             container.innerHTML = '';
-
             haditsList.forEach((hadits) => {
                 const haditsCard = document.createElement('div');
                 haditsCard.className = 'hadits-card';
@@ -1538,7 +2171,7 @@
 
                 const date = data.data.date;
                 html += `
-                    <div style="margin-top: 30px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 15px;">
+                    <div style="margin-top: 30px; text-align: center; padding: 20px; background: var(--bg); border-radius: 15px;">
                         <h3 style="color: var(--primary); margin-bottom: 10px;">
                             <i class="fas fa-calendar-day"></i> ${date.readable}
                         </h3>
@@ -1633,12 +2266,9 @@
         function toggleActivity(activityId) {
             const today = new Date().toDateString();
             if (!activities[today]) activities[today] = {};
-
             activities[today][activityId] = !activities[today][activityId];
             localStorage.setItem('sijilActivities', JSON.stringify(activities));
-
             initializeSijil();
-
             if (activities[today][activityId]) {
                 showNotification('Alhamdulillah! Aktivitas tercatat.');
             }
@@ -1732,7 +2362,6 @@
             notif.textContent = message;
             notif.style.background = type === 'error' ? '#e74c3c' : '#27ae60';
             notif.style.display = 'block';
-
             setTimeout(() => {
                 notif.style.display = 'none';
             }, 3000);
@@ -1745,6 +2374,7 @@
         window.onbeforeunload = function () {
             saveStats();
             localStorage.setItem('sijilActivities', JSON.stringify(activities));
+            stopCompass();
         };
     </script>
 </body>
