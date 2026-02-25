@@ -359,7 +359,7 @@
             font-size: 1em;
         }
 
-        /* Sijil Tsaksiyah Styles */
+        /* Kegiatan Harian Styles */
         .date-header {
             text-align: center;
             margin-bottom: 30px;
@@ -728,7 +728,7 @@
             <button class="nav-btn" onclick="showSection('prayer')">
                 <i class="fas fa-clock"></i> Jadwal Shalat
             </button>
-            <button class="nav-btn" onclick="showSection('sijil')">
+            <button class="nav-btn" onclick="showSection('Kegiatan Harian')">
                 <i class="fas fa-clipboard-check"></i> Kegiatan Harian
             </button>
         </nav>
@@ -820,8 +820,8 @@
             </div>
         </section>
 
-        <!-- Sijil Tsaksiyah Section -->
-        <section id="sijil" class="content-section">
+        <!-- Kegiatan Harian Section -->
+        <section id="Kegiatan Harian" class="content-section">
             <!-- Reading Tracker -->
             <div class="reading-tracker">
                 <div class="tracker-header">
@@ -975,7 +975,7 @@
             loadSurahList();
             loadHadits();
             getPrayerTimes();
-            initializeSijil();
+            initializeKegiatan Harian();
             updateDate();
             loadStats();
 
@@ -995,7 +995,7 @@
             document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
 
-            if (sectionId === 'sijil') {
+            if (sectionId === 'Kegiatan Harian') {
                 updateProgress();
             }
         }
@@ -1077,7 +1077,7 @@
                         </div>
                         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
                             <button class="btn-primary btn-success" onclick="markAyahAsRead(${index}, ${surahNumber}, '${currentSurah.namaLatin}')">
-                                <i class="fas fa-check"></i> Tandai Sudah Dibaca & Catat di Sijil
+                                <i class="fas fa-check"></i> Tandai Sudah Dibaca & Catat di Kegiatan Harian
                             </button>
                         </div>
                     `;
@@ -1107,7 +1107,7 @@
             ayahCard.style.background = '#d4edda';
             ayahCard.style.borderLeft = '5px solid var(--success)';
 
-            showNotification(`Ayat ${ayahIndex + 1} ${surahName} tercatat di Sijil Tsaksiyah!`);
+            showNotification(`Ayat ${ayahIndex + 1} ${surahName} tercatat di Kegiatan Harian!`);
         }
 
         // Track Quran Reading
@@ -1147,9 +1147,9 @@
             const today = new Date().toDateString();
             if (!activities[today]) activities[today] = {};
             activities[today][activityId] = true;
-            localStorage.setItem('sijilActivities', JSON.stringify(activities));
+            localStorage.setItem('Kegiatan HarianActivities', JSON.stringify(activities));
 
-            // Update UI if in sijil section
+            // Update UI if in Kegiatan Harian section
             const checkbox = document.querySelector(`[data-activity="${activityId}"]`);
             if (checkbox && !checkbox.classList.contains('checked')) {
                 checkbox.classList.add('checked');
@@ -1339,8 +1339,8 @@
             getPrayerTimes(); // Fallback to city-based
         }
 
-        // Sijil Tsaksiyah Functions
-        function initializeSijil() {
+        // Kegiatan Harian Functions
+        function initializeKegiatan Harian() {
             const grid = document.getElementById('activityGrid');
             grid.innerHTML = '';
 
@@ -1396,9 +1396,9 @@
             if (!activities[today]) activities[today] = {};
 
             activities[today][activityId] = !activities[today][activityId];
-            localStorage.setItem('sijilActivities', JSON.stringify(activities));
+            localStorage.setItem('Kegiatan HarianActivities', JSON.stringify(activities));
 
-            initializeSijil();
+            initializeKegiatan Harian();
 
             if (activities[today][activityId]) {
                 showNotification('Alhamdulillah! Aktivitas tercatat.');
@@ -1450,9 +1450,9 @@
                 activities[today] = {};
                 quranStats.ayahsRead = 0;
                 quranStats.pagesRead = 0;
-                localStorage.setItem('sijilActivities', JSON.stringify(activities));
+                localStorage.setItem('Kegiatan HarianActivities', JSON.stringify(activities));
                 saveStats();
-                initializeSijil();
+                initializeKegiatan Harian();
                 updateReadingDisplay();
                 showNotification('Statistik hari ini telah direset');
             }
@@ -1464,7 +1464,7 @@
         }
 
         function loadStats() {
-            const savedActivities = localStorage.getItem('sijilActivities');
+            const savedActivities = localStorage.getItem('Kegiatan HarianActivities');
             if (savedActivities) activities = JSON.parse(savedActivities);
 
             const savedStats = localStorage.getItem('quranStats');
@@ -1503,7 +1503,7 @@
         // Auto-save on before unload
         window.onbeforeunload = function () {
             saveStats();
-            localStorage.setItem('sijilActivities', JSON.stringify(activities));
+            localStorage.setItem('Kegiatan HarianActivities', JSON.stringify(activities));
         };
     </script>
 </body>
