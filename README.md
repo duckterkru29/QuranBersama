@@ -15,7 +15,7 @@ Otomatis berdasarkan kota (default: Jakarta)
 Geolokasi untuk deteksi otomatis
 Highlight waktu shalat saat ini
 Kalender Hijriyah
-4. Sijil Tsaksiyah (Buku Amal)
+4. Kegiatan Harian (Buku Amal)
 Terbagi 3 kategori:
 Ibadah: Shalat 5 waktu + Tahajjud, Tadarus (auto-track), Puasa
 Olahraga: Lari, Push up, Angkat beban, Bela diri, Sit up, Futsal, Renang
