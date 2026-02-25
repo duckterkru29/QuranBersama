@@ -1111,121 +1111,170 @@
         }
 
         // --- Audio Player Logic ---
-        function getAudioUrl(ayah) {
-            if (ayah.audio) {
-                return ayah.audio['05'] || ayah.audio['01'] || Object.values(ayah.audio)[0];
-            }
-            return null;
+function getAudioUrl(ayah) {
+    if (ayah.audio) {
+        return ayah.audio['05'] || ayah.audio['01'] || Object.values(ayah.audio)[0];
+    }
+    return null;
+}
+
+// Fungsi untuk menghentikan semua audio yang sedang berjalan
+function stopAllAudio() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+    }
+    
+    // Reset semua ikon ke play
+    document.querySelectorAll('.audio-btn i').forEach(icon => {
+        icon.className = 'fas fa-play';
+    });
+    
+    // Reset tombol full surah
+    const fullSurahBtnIcon = document.getElementById('fullSurahBtnIcon');
+    const fullSurahBtnText = document.getElementById('fullSurahBtnText');
+    if (fullSurahBtnIcon) fullSurahBtnIcon.className = 'fas fa-play';
+    if (fullSurahBtnText) fullSurahBtnText.textContent = 'Dengar Surah';
+    
+    isPlayingFullSurah = false;
+}
+
+function playAyah(index) {
+    // Jika ayat yang sama diklik dan sedang diputar
+    if (currentPlayingAyahIndex === index && currentAudio && !isPlayingFullSurah) {
+        stopAllAudio();
+        return;
+    }
+    
+    // Hentikan audio yang sedang berjalan (termasuk full surah)
+    if (currentAudio) {
+        stopAllAudio();
+    }
+    
+    // Set mode ke single ayah (bukan full surah)
+    isPlayingFullSurah = false;
+    currentPlayingAyahIndex = index;
+    
+    const ayah = currentSurah.ayat[index];
+    const audioUrl = getAudioUrl(ayah);
+    
+    if (audioUrl) {
+        currentAudio = new Audio(audioUrl);
+        
+        // Update ikon ayat ini ke pause
+        const icon = document.querySelector(`#ayah-${index} .audio-btn i`);
+        if (icon) icon.className = 'fas fa-pause';
+        
+        // Auto-scroll ke ayat yang diputar
+        const ayahCard = document.getElementById(`ayah-${index}`);
+        if (ayahCard) {
+            ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+        
+        currentAudio.play();
+        
+        currentAudio.onended = () => {
+            // Reset ikon ke play ketika selesai
+            if (icon) icon.className = 'fas fa-play';
+            currentAudio = null;
+        };
+        
+        currentAudio.onpause = () => {
+            if (icon) icon.className = 'fas fa-play';
+        };
+    }
+}
 
-        function playAyah(index) {
-            // Jika diklik ayah yg sama dan sedang main (entah full atau single), maka Pause
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
+function playFullSurah() {
+    const btnIcon = document.getElementById('fullSurahBtnIcon');
+    const btnText = document.getElementById('fullSurahBtnText');
+    
+    // Jika sedang memutar full surah, pause
+    if (isPlayingFullSurah && currentAudio) {
+        stopAllAudio();
+        return;
+    }
+    
+    // Jika ada audio lain yang sedang berjalan (single ayah), hentikan dulu
+    if (currentAudio) {
+        stopAllAudio();
+    }
+    
+    // Mulai full surah dari ayat pertama atau lanjutkan dari ayat terakhir yang diputar
+    // Jika user baru saja memutar ayat spesifik, mulai dari ayat tersebut
+    // Jika tidak, mulai dari awal (ayat 0)
+    if (currentPlayingAyahIndex >= currentSurah.ayat.length) {
+        currentPlayingAyahIndex = 0;
+    }
+    
+    isPlayingFullSurah = true;
+    btnIcon.className = 'fas fa-pause';
+    btnText.textContent = 'Jeda';
+    
+    playNextAyahInSurah();
+}
 
-                // Kembalikan semua icon ke play
-                document.querySelectorAll('.audio-btn i.fa-pause').forEach(icon => {
-                    icon.className = 'fas fa-play';
-                });
-                document.getElementById('fullSurahBtnIcon').className = 'fas fa-play';
-                document.getElementById('fullSurahBtnText').textContent = 'Dengar Surah';
-
-                if (currentPlayingAyahIndex === index && !isPlayingFullSurah) {
-                    return; // Stop
-                }
-            }
-
-            isPlayingFullSurah = false;
-            currentPlayingAyahIndex = index;
-            const ayah = currentSurah.ayat[index];
-            const audioUrl = getAudioUrl(ayah);
-
-            if (audioUrl) {
-                currentAudio = new Audio(audioUrl);
-                const icon = document.querySelector(`#ayah-${index} .audio-btn i`);
-                if (icon) icon.className = 'fas fa-pause';
-
-                currentAudio.play();
-                currentAudio.onended = () => {
-                    if (icon) icon.className = 'fas fa-play';
-                    currentAudio = null;
-                };
-            }
+function playNextAyahInSurah() {
+    // Cek apakah masih dalam mode full surah dan masih ada ayat
+    if (!isPlayingFullSurah || currentPlayingAyahIndex >= currentSurah.ayat.length) {
+        stopAllAudio();
+        return;
+    }
+    
+    const ayah = currentSurah.ayat[currentPlayingAyahIndex];
+    const audioUrl = getAudioUrl(ayah);
+    
+    if (audioUrl) {
+        // Reset semua ikon ke play terlebih dahulu
+        document.querySelectorAll('.ayah-card .audio-btn i').forEach(icon => {
+            icon.className = 'fas fa-play';
+        });
+        
+        // Update ikon ayat yang sedang diputar ke pause
+        const icon = document.querySelector(`#ayah-${currentPlayingAyahIndex} .audio-btn i`);
+        if (icon) icon.className = 'fas fa-pause';
+        
+        // Auto-scroll dengan smooth ke ayat yang sedang diputar
+        const ayahCard = document.getElementById(`ayah-${currentPlayingAyahIndex}`);
+        if (ayahCard) {
+            ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-
-        function playFullSurah() {
-            const btnIcon = document.getElementById('fullSurahBtnIcon');
-            const btnText = document.getElementById('fullSurahBtnText');
-
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-                isPlayingFullSurah = false;
-
-                btnIcon.className = 'fas fa-play';
-                btnText.textContent = 'Dengar Surah';
-                document.querySelectorAll('.audio-btn i.fa-pause').forEach(icon => {
-                    icon.className = 'fas fa-play';
-                });
-                return; // Paused
-            }
-
-            isPlayingFullSurah = true;
-            // Jika belum mulai dari manapun, mulai dari 0.
-            currentPlayingAyahIndex = 0;
-            btnIcon.className = 'fas fa-pause';
-            btnText.textContent = 'Jeda';
+        
+        currentAudio = new Audio(audioUrl);
+        currentAudio.play();
+        
+        currentAudio.onended = () => {
+            // Reset ikon ayat yang selesai ke play
+            if (icon) icon.className = 'fas fa-play';
+            
+            // Lanjut ke ayat berikutnya
+            currentPlayingAyahIndex++;
             playNextAyahInSurah();
-        }
+        };
+        
+        currentAudio.onerror = () => {
+            // Jika error, lanjut ke ayat berikutnya
+            currentPlayingAyahIndex++;
+            playNextAyahInSurah();
+        };
+    } else {
+        // Jika tidak ada audio, lanjut ke ayat berikutnya
+        currentPlayingAyahIndex++;
+        playNextAyahInSurah();
+    }
+}
 
-        function playNextAyahInSurah() {
-            if (!isPlayingFullSurah || currentPlayingAyahIndex >= currentSurah.ayat.length) {
-                isPlayingFullSurah = false;
-                const btnIcon = document.getElementById('fullSurahBtnIcon');
-                const btnText = document.getElementById('fullSurahBtnText');
-                if (btnIcon) btnIcon.className = 'fas fa-play';
-                if (btnText) btnText.textContent = 'Dengar Surah';
-
-                document.querySelectorAll('.audio-btn i.fa-pause').forEach(icon => {
-                    icon.className = 'fas fa-play';
-                });
-                return;
-            }
-
-            const ayah = currentSurah.ayat[currentPlayingAyahIndex];
-
-            // Reset icons
-            document.querySelectorAll('.audio-btn i.fa-pause').forEach(icon => {
-                // Ignore the main button
-                if (icon.id !== 'fullSurahBtnIcon') {
-                    icon.className = 'fas fa-play';
-                }
-            });
-
-            const icon = document.querySelector(`#ayah-${currentPlayingAyahIndex} .audio-btn i`);
-            if (icon) icon.className = 'fas fa-pause';
-
-            // Auto scroll to playing ayah
-            const ayahCard = document.getElementById(`ayah-${currentPlayingAyahIndex}`);
-            if (ayahCard) {
-                ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-
-            const audioUrl = getAudioUrl(ayah);
-            if (audioUrl) {
-                currentAudio = new Audio(audioUrl);
-                currentAudio.play();
-                currentAudio.onended = () => {
-                    currentPlayingAyahIndex++;
-                    playNextAyahInSurah();
-                };
-            } else {
-                currentPlayingAyahIndex++;
-                playNextAyahInSurah();
-            }
-        }
-        // --- End Audio Player Logic ---
+// Fungsi tambahan untuk memastikan audio berhenti saat kembali ke daftar surah
+function backToSurahList() {
+    stopAllAudio();
+    currentPlayingAyahIndex = 0;
+    
+    document.getElementById('surahListView').style.display = 'block';
+    document.getElementById('surahDetailView').style.display = 'none';
+    currentSurah = null;
+}
+// --- End Audio Player Logic ---
 
         // Mark Ayah as Read
         function markAyahAsRead(ayahIndex, surahNumber, surahName) {
