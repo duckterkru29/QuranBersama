@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" dir="rtl">
+<html lang="id" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
@@ -359,7 +359,7 @@
             font-size: 1em;
         }
 
-        /* Kegiatan Harian Styles */
+        /* Sijil Tsaksiyah Styles */
         .date-header {
             text-align: center;
             margin-bottom: 30px;
@@ -728,7 +728,7 @@
             <button class="nav-btn" onclick="showSection('prayer')">
                 <i class="fas fa-clock"></i> Jadwal Shalat
             </button>
-            <button class="nav-btn" onclick="showSection('Kegiatan Harian')">
+            <button class="nav-btn" onclick="showSection('sijil')">
                 <i class="fas fa-clipboard-check"></i> Kegiatan Harian
             </button>
         </nav>
@@ -753,8 +753,9 @@
                             <i class="fas fa-arrow-right"></i> Kembali ke Daftar
                         </button>
                         <div>
-                            <button class="audio-btn" onclick="playFullSurah()">
-                                <i class="fas fa-play"></i> Dengar Surah
+                            <button class="audio-btn" onclick="playFullSurah()" id="fullSurahBtn">
+                                <i class="fas fa-play" id="fullSurahBtnIcon"></i> <span id="fullSurahBtnText">Dengar
+                                    Surah</span>
                             </button>
                         </div>
                     </div>
@@ -820,8 +821,8 @@
             </div>
         </section>
 
-        <!-- Kegiatan Harian Section -->
-        <section id="Kegiatan Harian" class="content-section">
+        <!-- Sijil Tsaksiyah Section -->
+        <section id="sijil" class="content-section">
             <!-- Reading Tracker -->
             <div class="reading-tracker">
                 <div class="tracker-header">
@@ -919,6 +920,10 @@
         let currentSurah = null;
         let currentAyah = 0;
         let haditsPage = 1;
+
+        let currentAudio = null;
+        let isPlayingFullSurah = false;
+        let currentPlayingAyahIndex = 0;
         let activities = {};
         let quranStats = {
             ayahsRead: 0,
@@ -975,7 +980,7 @@
             loadSurahList();
             loadHadits();
             getPrayerTimes();
-            initializeKegiatan Harian();
+            initializeSijil();
             updateDate();
             loadStats();
 
@@ -995,7 +1000,7 @@
             document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
 
-            if (sectionId === 'Kegiatan Harian') {
+            if (sectionId === 'sijil') {
                 updateProgress();
             }
         }
@@ -1077,7 +1082,7 @@
                         </div>
                         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
                             <button class="btn-primary btn-success" onclick="markAyahAsRead(${index}, ${surahNumber}, '${currentSurah.namaLatin}')">
-                                <i class="fas fa-check"></i> Tandai Sudah Dibaca & Catat di Kegiatan Harian
+                                <i class="fas fa-check"></i> Tandai Sudah Dibaca & Catat di Kegiatan
                             </button>
                         </div>
                     `;
@@ -1093,10 +1098,134 @@
         }
 
         function backToSurahList() {
+            // Stop audio if playing
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                isPlayingFullSurah = false;
+            }
+
             document.getElementById('surahListView').style.display = 'block';
             document.getElementById('surahDetailView').style.display = 'none';
             currentSurah = null;
         }
+
+        // --- Audio Player Logic ---
+        function getAudioUrl(ayah) {
+            if (ayah.audio) {
+                return ayah.audio['05'] || ayah.audio['01'] || Object.values(ayah.audio)[0];
+            }
+            return null;
+        }
+
+        function playAyah(index) {
+            // Jika diklik ayah yg sama dan sedang main (entah full atau single), maka Pause
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+
+                // Kembalikan semua icon ke play
+                document.querySelectorAll('.audio-btn i.fa-pause').forEach(icon => {
+                    icon.className = 'fas fa-play';
+                });
+                document.getElementById('fullSurahBtnIcon').className = 'fas fa-play';
+                document.getElementById('fullSurahBtnText').textContent = 'Dengar Surah';
+
+                if (currentPlayingAyahIndex === index && !isPlayingFullSurah) {
+                    return; // Stop
+                }
+            }
+
+            isPlayingFullSurah = false;
+            currentPlayingAyahIndex = index;
+            const ayah = currentSurah.ayat[index];
+            const audioUrl = getAudioUrl(ayah);
+
+            if (audioUrl) {
+                currentAudio = new Audio(audioUrl);
+                const icon = document.querySelector(`#ayah-${index} .audio-btn i`);
+                if (icon) icon.className = 'fas fa-pause';
+
+                currentAudio.play();
+                currentAudio.onended = () => {
+                    if (icon) icon.className = 'fas fa-play';
+                    currentAudio = null;
+                };
+            }
+        }
+
+        function playFullSurah() {
+            const btnIcon = document.getElementById('fullSurahBtnIcon');
+            const btnText = document.getElementById('fullSurahBtnText');
+
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                isPlayingFullSurah = false;
+
+                btnIcon.className = 'fas fa-play';
+                btnText.textContent = 'Dengar Surah';
+                document.querySelectorAll('.audio-btn i.fa-pause').forEach(icon => {
+                    icon.className = 'fas fa-play';
+                });
+                return; // Paused
+            }
+
+            isPlayingFullSurah = true;
+            // Jika belum mulai dari manapun, mulai dari 0.
+            currentPlayingAyahIndex = 0;
+            btnIcon.className = 'fas fa-pause';
+            btnText.textContent = 'Jeda';
+            playNextAyahInSurah();
+        }
+
+        function playNextAyahInSurah() {
+            if (!isPlayingFullSurah || currentPlayingAyahIndex >= currentSurah.ayat.length) {
+                isPlayingFullSurah = false;
+                const btnIcon = document.getElementById('fullSurahBtnIcon');
+                const btnText = document.getElementById('fullSurahBtnText');
+                if (btnIcon) btnIcon.className = 'fas fa-play';
+                if (btnText) btnText.textContent = 'Dengar Surah';
+
+                document.querySelectorAll('.audio-btn i.fa-pause').forEach(icon => {
+                    icon.className = 'fas fa-play';
+                });
+                return;
+            }
+
+            const ayah = currentSurah.ayat[currentPlayingAyahIndex];
+
+            // Reset icons
+            document.querySelectorAll('.audio-btn i.fa-pause').forEach(icon => {
+                // Ignore the main button
+                if (icon.id !== 'fullSurahBtnIcon') {
+                    icon.className = 'fas fa-play';
+                }
+            });
+
+            const icon = document.querySelector(`#ayah-${currentPlayingAyahIndex} .audio-btn i`);
+            if (icon) icon.className = 'fas fa-pause';
+
+            // Auto scroll to playing ayah
+            const ayahCard = document.getElementById(`ayah-${currentPlayingAyahIndex}`);
+            if (ayahCard) {
+                ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            const audioUrl = getAudioUrl(ayah);
+            if (audioUrl) {
+                currentAudio = new Audio(audioUrl);
+                currentAudio.play();
+                currentAudio.onended = () => {
+                    currentPlayingAyahIndex++;
+                    playNextAyahInSurah();
+                };
+            } else {
+                currentPlayingAyahIndex++;
+                playNextAyahInSurah();
+            }
+        }
+        // --- End Audio Player Logic ---
 
         // Mark Ayah as Read
         function markAyahAsRead(ayahIndex, surahNumber, surahName) {
@@ -1147,9 +1276,9 @@
             const today = new Date().toDateString();
             if (!activities[today]) activities[today] = {};
             activities[today][activityId] = true;
-            localStorage.setItem('Kegiatan HarianActivities', JSON.stringify(activities));
+            localStorage.setItem('sijilActivities', JSON.stringify(activities));
 
-            // Update UI if in Kegiatan Harian section
+            // Update UI if in sijil section
             const checkbox = document.querySelector(`[data-activity="${activityId}"]`);
             if (checkbox && !checkbox.classList.contains('checked')) {
                 checkbox.classList.add('checked');
@@ -1339,8 +1468,8 @@
             getPrayerTimes(); // Fallback to city-based
         }
 
-        // Kegiatan Harian Functions
-        function initializeKegiatan Harian() {
+        // Sijil Tsaksiyah Functions
+        function initializeSijil() {
             const grid = document.getElementById('activityGrid');
             grid.innerHTML = '';
 
@@ -1396,9 +1525,9 @@
             if (!activities[today]) activities[today] = {};
 
             activities[today][activityId] = !activities[today][activityId];
-            localStorage.setItem('Kegiatan HarianActivities', JSON.stringify(activities));
+            localStorage.setItem('sijilActivities', JSON.stringify(activities));
 
-            initializeKegiatan Harian();
+            initializeSijil();
 
             if (activities[today][activityId]) {
                 showNotification('Alhamdulillah! Aktivitas tercatat.');
@@ -1450,9 +1579,9 @@
                 activities[today] = {};
                 quranStats.ayahsRead = 0;
                 quranStats.pagesRead = 0;
-                localStorage.setItem('Kegiatan HarianActivities', JSON.stringify(activities));
+                localStorage.setItem('sijilActivities', JSON.stringify(activities));
                 saveStats();
-                initializeKegiatan Harian();
+                initializeSijil();
                 updateReadingDisplay();
                 showNotification('Statistik hari ini telah direset');
             }
@@ -1464,7 +1593,7 @@
         }
 
         function loadStats() {
-            const savedActivities = localStorage.getItem('Kegiatan HarianActivities');
+            const savedActivities = localStorage.getItem('sijilActivities');
             if (savedActivities) activities = JSON.parse(savedActivities);
 
             const savedStats = localStorage.getItem('quranStats');
@@ -1503,7 +1632,7 @@
         // Auto-save on before unload
         window.onbeforeunload = function () {
             saveStats();
-            localStorage.setItem('Kegiatan HarianActivities', JSON.stringify(activities));
+            localStorage.setItem('sijilActivities', JSON.stringify(activities));
         };
     </script>
 </body>
