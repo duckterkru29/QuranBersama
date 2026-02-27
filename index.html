@@ -2516,7 +2516,12 @@
 
                 ayahCard.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
-                        <span class="ayah-number">${ayah.nomorAyat}</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="ayah-number" style="margin: 0;">${ayah.nomorAyat}</span>
+                            <span style="color: var(--primary); font-weight: 600; font-size: 0.9em; border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
+                                ${sName}
+                            </span>
+                        </div>
                         <button class="audio-btn" onclick="playAyah(${index})" title="Putar Ayat">
                             <i class="fas fa-play"></i>
                         </button>
