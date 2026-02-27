@@ -1855,7 +1855,12 @@
             });
 
             document.getElementById(sectionId).classList.add('active');
-            event.target.classList.add('active');
+
+            // Cari tombol navigasi yang sesuai dengan klik dan pastikan class active menempel pada tombol, bukan elemen di dalamnya
+            const activeBtn = document.querySelector(`.nav-btn[onclick*="${sectionId}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
 
             if (sectionId === 'sijil') {
                 updateProgress();
