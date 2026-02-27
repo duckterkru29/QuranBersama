@@ -1298,9 +1298,48 @@
                 font-size: 1.8em;
             }
 
+            body {
+                padding-bottom: 80px;
+                /* Space for bottom nav */
+            }
+
+            .nav-tabs {
+                position: fixed !important;
+                bottom: 15px;
+                left: 15px;
+                right: 15px;
+                background: var(--card) !important;
+                backdrop-filter: var(--glass-blur);
+                -webkit-backdrop-filter: var(--glass-blur);
+                border: 1px solid var(--border) !important;
+                box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.1) !important;
+                z-index: 1000;
+                display: flex !important;
+                justify-content: space-around !important;
+                padding: 10px 5px !important;
+                margin: 0 !important;
+                border-radius: 20px !important;
+            }
+
             .nav-btn {
-                padding: 12px 20px;
-                font-size: 0.9em;
+                padding: 10px !important;
+                font-size: 0.70em !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 5px !important;
+                flex: 1 !important;
+                border-radius: 15px !important;
+                text-align: center;
+            }
+
+            .nav-btn i {
+                font-size: 1.4em !important;
+            }
+
+            .nav-btn span {
+                margin-left: 0 !important;
+                white-space: nowrap;
             }
 
             .arabic-text {
@@ -1358,10 +1397,102 @@
             color: var(--text-secondary);
             margin-bottom: 15px;
         }
+
+        /* ==========================================
+           MODERN UI UX ENHANCEMENTS
+           ========================================== */
+
+        /* 1. Immersive Reading Progress Bar */
+        #readingProgress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent);
+            width: 0%;
+            z-index: 9999;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px rgba(229, 180, 67, 0.5);
+        }
+
+        /* 2. Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg) 25%, var(--border) 50%, var(--bg) 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-radius: 16px;
+            height: 100px;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .skeleton-surah {
+            height: 110px;
+        }
+
+        .skeleton-hadits {
+            height: 150px;
+        }
+
+        @keyframes skeletonLoading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* 3. Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .nav-btn,
+        .surah-item,
+        .btn-primary,
+        .hadits-card,
+        .ayah-card,
+        .prayer-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Add fade-in animation for mobile sections */
+        .content-section {
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
 <body>
+    <div id="readingProgress"></div>
     <div class="container">
         <header>
             <div class="header-controls">
@@ -1427,9 +1558,11 @@
                         </div>
                     </div>
                     <div id="surahList" class="surah-list">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                        </div>
+                        <!-- Skeleton Loaders untuk Surah -->
+                        <div class="skeleton skeleton-surah"></div>
+                        <div class="skeleton skeleton-surah"></div>
+                        <div class="skeleton skeleton-surah"></div>
+                        <div class="skeleton skeleton-surah"></div>
                     </div>
                 </div>
 
@@ -2322,7 +2455,7 @@
                 return;
             }
             try {
-                document.getElementById('surahList').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+                document.getElementById('surahList').innerHTML = '<div class="skeleton skeleton-surah"></div><div class="skeleton skeleton-surah"></div><div class="skeleton skeleton-surah"></div><div class="skeleton skeleton-surah"></div>';
                 const response = await fetch(`https://api.myquran.com/v2/quran/ayat/juz/${juzNo}`);
                 const data = await response.json();
 
@@ -2394,7 +2527,7 @@
             try {
                 document.getElementById('surahListView').style.display = 'none';
                 document.getElementById('surahDetailView').style.display = 'block';
-                document.getElementById('surahContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+                document.getElementById('surahContent').innerHTML = '<div class="skeleton skeleton-hadits"></div><div class="skeleton skeleton-hadits"></div><div class="skeleton skeleton-hadits"></div>';
 
                 const response = await fetch(`https://equran.id/api/v2/surat/${surahNumber}`);
                 const data = await response.json();
@@ -3037,7 +3170,7 @@
             const sourceName = sourceSelector.options[sourceSelector.selectedIndex].text;
 
             haditsPage = 1;
-            document.getElementById('haditsContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            document.getElementById('haditsContent').innerHTML = '<div class="skeleton skeleton-hadits"></div><div class="skeleton skeleton-hadits"></div><div class="skeleton skeleton-hadits"></div>';
             document.getElementById('searchMainHadits').value = '';
             document.getElementById('loadMoreHaditsBtn').style.display = 'none';
             document.getElementById('haditsInfoBar').innerText = 'Mengunduh Data...';
@@ -3175,7 +3308,7 @@
         async function getPrayerTimes() {
             const city = document.getElementById('cityInput').value || 'Jakarta';
             const container = document.getElementById('prayerTimesContent');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            container.innerHTML = '<div class="skeleton skeleton-hadits"></div><div class="skeleton skeleton-hadits"></div><div class="skeleton skeleton-hadits"></div>';
 
             try {
                 const response = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Indonesia&method=11`);
@@ -3420,6 +3553,40 @@
             localStorage.setItem('sijilActivities', JSON.stringify(activities));
             stopCompass();
         };
+
+        // ==========================================
+        // UI/UX ENHANCEMENTS & ANIMATIONS
+        // ==========================================
+
+        // 1. Hook Ripple Effect ke seluruh elemen interaktif
+        document.body.addEventListener('click', function (e) {
+            const btn = e.target.closest('.nav-btn, .surah-item, .btn-primary, .hadits-card, .ayah-card, .prayer-card');
+            if (btn) {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${x - size / 2}px`;
+                ripple.style.top = `${y - size / 2}px`;
+
+                btn.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            }
+        });
+
+        // 2. Immersive Reading Progress Bar Check
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            const progressBar = document.getElementById('readingProgress');
+            if (progressBar) progressBar.style.width = scrolled + '%';
+        });
     </script>
 </body>
 
