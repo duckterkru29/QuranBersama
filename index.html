@@ -725,7 +725,7 @@
 
         .arabic-text {
             font-family: 'Amiri', serif;
-            font-size: 1.8em;
+            font-size: var(--arabic-font-size, 2.2em);
             text-align: right;
             line-height: 2;
             color: var(--primary);
@@ -1590,6 +1590,18 @@
                                 <i class="fas fa-play" id="fullSurahBtnIcon" style="margin-right: 5px;"></i>
                                 <span id="fullSurahBtnText">Putar Murottal</span>
                             </button>
+                            <div id="inlineJuzSelectContainer" style="display: none; position: relative; width: 100px;">
+                                <select id="inlineJuzSelect"
+                                    onchange="if(this.value) { document.getElementById('juzSelect').value = this.value; loadJuz(); }"
+                                    style="width: 100%; height: 100%; padding: 0 15px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-family: inherit; font-size: 0.95em; cursor: pointer; outline: none; appearance: none; text-align: center;">
+                                    <option value="">Juz</option>
+                                    <script>
+                                        for (let i = 1; i <= 30; i++) document.write(`<option value="${i}">Juz ${i}</option>`);
+                                    </script>
+                                </select>
+                                <i class="fas fa-chevron-down"
+                                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; font-size: 0.8em;"></i>
+                            </div>
                             <button class="btn-primary" onclick="showSettingsModal()"
                                 style="margin: 0; width: 45px; height: 45px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--text); border: 1px solid var(--border); box-shadow: none;"
                                 title="Pengaturan Tampilan">
@@ -2608,25 +2620,26 @@
         }
 
         function renderSurahDetail(namaLatin, arti, jumlahAyat, tempatTurun, isBismillah) {
+
+            const inlineJuzContainer = document.getElementById('inlineJuzSelectContainer');
+            if (inlineJuzContainer) {
+                if (namaLatin.startsWith('Juz')) {
+                    inlineJuzContainer.style.display = 'block';
+                    document.getElementById('inlineJuzSelect').value = document.getElementById('juzSelect').value;
+                } else {
+                    inlineJuzContainer.style.display = 'none';
+                }
+            }
+
             const content = document.getElementById('surahContent');
             content.innerHTML = `
                 <div style="text-align: center; margin-bottom: 30px;">
                     <h2 style="color: var(--primary); font-size: 2em; font-weight: 700;">${namaLatin}</h2>
                     <p style="color: var(--text-secondary); margin-top: 5px;">${arti} • ${jumlahAyat} Ayat ${tempatTurun ? '• ' + tempatTurun : ''}</p>
                     
-                    ${namaLatin.startsWith('Juz') ? `
-                        <div style="margin-top: 20px; display: inline-block; position: relative; width: 250px;">
-                            <select onchange="if(this.value) { document.getElementById('juzSelect').value = this.value; loadJuz(); }" style="width: 100%; padding: 10px 15px; border-radius: 50px; border: 1px solid var(--accent); background: rgba(229, 180, 67, 0.15); color: var(--accent); font-family: inherit; font-weight: 600; cursor: pointer; outline: none; appearance: none; text-align: center;">
-                                <option value="">--- Pindah Juz ---</option>
-                                ${Array.from({ length: 30 }, (_, i) => `<option value="${i + 1}">Juz ${i + 1}</option>`).join('')}
-                            </select>
-                            <i class="fas fa-chevron-down" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--accent);"></i>
-                        </div>
-                    ` : `
                     <button class="btn-primary" onclick="showHadithModal()" style="margin-top: 20px; background: rgba(229, 180, 67, 0.15); border: 1px solid var(--accent); padding: 10px 20px; border-radius: 50px; cursor: pointer; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; font-weight: 600; box-shadow: none;">
                         <i class="fas fa-search"></i> Cari Hadits Terkait Surah Ini
                     </button>
-                    `}
                 </div>
                 ${isBismillah ? '<div class="bismillah" style="text-align: center; margin: 30px 0; font-family: \'Amiri\', serif; font-size: 2em; color: var(--primary);">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>' : ''}
             `;
@@ -2684,7 +2697,7 @@
                     <div class="latin-text" style="font-size: var(--latin-font-size, 1.1em); margin-bottom: 15px; color: var(--primary);">
                         ${ayah.teksLatin || ayah.latin || ''}
                     </div>
-                    <div class="translation">
+                    <div class="translation" style="font-size: var(--translation-font-size, 1em);">
                         <strong>Terjemahan:</strong><br>
                         ${ayah.teksIndonesia}
                     </div>
@@ -2888,9 +2901,12 @@
             if (type === 'arabic') {
                 let current = parseFloat(getComputedStyle(root).getPropertyValue('--arabic-font-size')) || 2.2;
                 root.style.setProperty('--arabic-font-size', (current + amount) + 'em');
-            } else {
+            } else if (type === 'latin') {
                 let current = parseFloat(getComputedStyle(root).getPropertyValue('--latin-font-size')) || 1.1;
                 root.style.setProperty('--latin-font-size', (current + amount) + 'em');
+            } else if (type === 'translation') {
+                let current = parseFloat(getComputedStyle(root).getPropertyValue('--translation-font-size')) || 1.1;
+                root.style.setProperty('--translation-font-size', (current + amount) + 'em');
             }
         }
 
@@ -2969,10 +2985,10 @@
                             <span style="font-weight: normal; font-size: 0.9em; color: var(--text-secondary);">Aa</span>
                         </label>
                         <div style="display: flex; gap: 10px;">
-                            <button onclick="changeFontSize('latin', -0.1)" class="btn-primary" style="flex: 1; margin: 0; padding: 12px; border-radius: 12px; background: var(--bg); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
+                            <button onclick="changeFontSize('translation', -0.1)" class="btn-primary" style="flex: 1; margin: 0; padding: 12px; border-radius: 12px; background: var(--bg); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <button onclick="changeFontSize('latin', 0.1)" class="btn-primary" style="flex: 1; margin: 0; padding: 12px; border-radius: 12px; background: var(--bg); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
+                            <button onclick="changeFontSize('translation', 0.1)" class="btn-primary" style="flex: 1; margin: 0; padding: 12px; border-radius: 12px; background: var(--bg); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
@@ -3139,10 +3155,10 @@
                             <span style="font-weight: normal; font-size: 0.9em; color: var(--text-secondary);">Aa</span>
                         </label>
                         <div style="display: flex; gap: 10px;">
-                            <button onclick="changeFontSize('latin', -0.1)" class="btn-primary" style="flex: 1; margin: 0; padding: 12px; border-radius: 12px; background: var(--bg); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
+                            <button onclick="changeFontSize('translation', -0.1)" class="btn-primary" style="flex: 1; margin: 0; padding: 12px; border-radius: 12px; background: var(--bg); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <button onclick="changeFontSize('latin', 0.1)" class="btn-primary" style="flex: 1; margin: 0; padding: 12px; border-radius: 12px; background: var(--bg); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
+                            <button onclick="changeFontSize('translation', 0.1)" class="btn-primary" style="flex: 1; margin: 0; padding: 12px; border-radius: 12px; background: var(--bg); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
