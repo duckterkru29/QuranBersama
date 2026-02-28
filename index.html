@@ -2474,7 +2474,7 @@
                 let tajweedVerses = [];
                 let page = 1;
                 while (page <= 2) {
-                    const qRes = await fetch(`https://api.quran.com/api/v4/verses/by_juz/${juzNo}?language=id&words=true&word_fields=text_uthmani_tajweed,transliteration&translations=33&page=${page}&per_page=300`);
+                    const qRes = await fetch(`https://api.quran.com/api/v4/verses/by_juz/${juzNo}?language=id&words=true&word_fields=text_indopak,text_uthmani_tajweed,transliteration&translations=33&page=${page}&per_page=300`);
                     if (!qRes.ok) break;
                     const qData = await qRes.json();
                     if (qData.verses) tajweedVerses = tajweedVerses.concat(qData.verses);
@@ -2504,7 +2504,7 @@
                 if (missingKeys.length > 0) {
                     await Promise.all(missingKeys.map(async (key) => {
                         try {
-                            const mRes = await fetch(`https://api.quran.com/api/v4/verses/by_key/${key}?language=id&words=true&word_fields=text_uthmani_tajweed,transliteration`);
+                            const mRes = await fetch(`https://api.quran.com/api/v4/verses/by_key/${key}?language=id&words=true&word_fields=text_indopak,text_uthmani_tajweed,transliteration`);
                             if (mRes.ok) {
                                 const mData = await mRes.json();
                                 if (mData.verse && mData.verse.words) tajweedMap[key] = mData.verse.words;
@@ -2674,7 +2674,7 @@
                         if (currentTajweedOn && currentArabicScript === 'text_uthmani') {
                             scriptKey = 'text_uthmani_tajweed';
                         }
-                        let arabicContent = word[scriptKey] || word.text_uthmani || word.text;
+                        let arabicContent = word[scriptKey] || word.text_uthmani || word.text_indopak || word.text;
 
                         // Menghapus karakter blank/zero-width yang sering menjadi kotak di browser
                         if (typeof arabicContent === 'string') {
